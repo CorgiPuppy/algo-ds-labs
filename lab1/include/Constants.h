@@ -1,6 +1,8 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <string>
+
 namespace Constants {
 	const int M = 8;
 	const int sizes[M] = {1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000};
@@ -9,6 +11,10 @@ namespace Constants {
 
 	const double min_element = -1.0;
 	const double max_element = 1.0;
+
+	const std::string folder("plots/files/");
+
+	const double c = 0.6 * 1e-5;
 }
 
 #endif
