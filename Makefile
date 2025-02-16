@@ -3,6 +3,7 @@ TARGET_DIR := target
 
 EXE := $(TARGET_DIR)/main
 SRC := $(wildcard $(SRC_DIR)/*.c)
+OBJ := $(patsubst $(SRC_DIR)/%.c, $(TARGET_DIR)/%.o, $(SRC))
 
 CC := gcc
 
@@ -20,7 +21,7 @@ $(EXE): $(OBJ) | $(TARGET_DIR)
 
 $(TARGET_DIR)/%.o: $(SRC_DIR)/%.c | $(TARGET_DIR)
 	@echo "Building objects.."
-	@$(CC) $< -o $@
+	@$(CC) -c $< -o $@
 
 $(TARGET_DIR):
 	@echo "Create a target dir.."
