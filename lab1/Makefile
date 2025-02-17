@@ -20,7 +20,7 @@ OUTPUT := --output-directory
 
 .PHONY: all
 
-all: clean run-src compile-gnp run-report clean-aux
+all: clean run-src compile-gnp run-report clean-aux clean-target
 
 run-src: $(EXE)
 	@echo "Running.."
@@ -55,6 +55,10 @@ clean-aux:
 	@echo "Cleaning up auxiliary files.."
 	@find $(REPORT_DIR) -type f ! -name '*.pdf' ! -name '*.tex' -delete
 
+clean-target:
+	@echo "Cleaning the target dir.."
+	@$(RM) -rv $(TARGET_DIR) 
+
 clean:
 	@echo "Cleaning up.."
-	@$(RM) -rv $(TARGET_DIR) $(RPRT)
+	@$(RM) $(RPRT)
