@@ -40,7 +40,7 @@ $(TARGET_DIR):
 
 compile-gnp: $(GNP)
 	@echo "Compile gnuplot files.."
-	@$(GNPLT) $<
+	@$(foreach file_name, $(GNP), $(GNPLT) $(file_name);)
 
 run-report: $(RPRT)
 	@echo "Running a report.."
