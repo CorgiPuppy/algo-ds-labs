@@ -32,7 +32,7 @@ int main() {
 		long long total_swaps = 0;
 		long long total_passes = 0;
 
-		for (int attempt = 0; attempt < Constants::amount_of_attempts - 19; attempt++) {
+		for (int attempt = 0; attempt < Constants::amount_of_attempts; attempt++) {
 			long long amount_of_repeated_passes = 0;
 			long long amount_of_swaps = 0;
 

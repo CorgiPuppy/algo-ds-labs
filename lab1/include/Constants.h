@@ -14,7 +14,7 @@ namespace Constants {
 
 	const std::string folder("plots/files/");
 
-	const long double c = 0.6 * 1e-5;
+	const long double c = 0.5 * 1e-5;
 }
 
 #endif
