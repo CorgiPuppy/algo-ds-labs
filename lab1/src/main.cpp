@@ -43,7 +43,7 @@ int main() {
 			std::cout << "Количество выполнения операций обмена значений: " << amount_of_swaps << "." << std::endl;
 		}
 		
-		worst_and_complexity << size << " " << the_worst_time << " " << c * (size * size) << std::endl;
+		worst_and_complexity << size << " " << the_worst_time << " " << Constants::c * (size * size) << std::endl;
 
 		delete [] array;
 	}
