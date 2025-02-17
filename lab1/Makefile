@@ -1,20 +1,28 @@
 SRC_DIR := src
 INC_DIR := include
 TARGET_DIR := target
+GNUPLOT_DIR := plots/gnuplot_files
+REPORT_DIR := report
 
+RPRT := $(REPORT_DIR)/report.pdf
 EXE := $(TARGET_DIR)/main
 INC := $(wildcard $(INC_DIR)/*.h)
 SRC := $(wildcard $(SRC_DIR)/*.cpp)
 OBJ := $(patsubst $(SRC_DIR)/%.cpp, $(TARGET_DIR)/%.o, $(SRC))
+GNP := $(wildcard $(GNUPLOT_DIR)/*.p)
 
 CPPC := g++
 CPPFLAGS := -lpthread -Wall
+GNPLT := gnuplot
+PDFLTX := pdflatex
+
+OUTPUT := --output-directory
 
 .PHONY: all
 
-all: run clean
+all: clean run-src compile-gnp run-report clean-aux
 
-run: $(EXE)
+run-src: $(EXE)
 	@echo "Running.."
 	@./$<
  
@@ -30,6 +38,23 @@ $(TARGET_DIR):
 	@echo "Create target dir.."
 	@mkdir -p $@
 
+compile-gnp: $(GNP)
+	@echo "Compile gnuplot files.."
+	@$(GNPLT) $<
+
+run-report: $(RPRT)
+	@echo "Running a report.."
+	@zathura $<
+
+$(RPRT): $(REPORT_DIR)/*.tex
+	@echo "Building pdf.."
+	$(PDFLTX) $(OUTPUT)=$(REPORT_DIR) $<
+	$(PDFLTX) $(OUTPUT)=$(REPORT_DIR) $<
+
+clean-aux:
+	@echo "Cleaning up auxiliary files.."
+	@find $(REPORT_DIR) -type f ! -name '*.pdf' ! -name '*.tex' -delete
+
 clean:
 	@echo "Cleaning up.."
-	@$(RM) -rv $(TARGET_DIR)
+	@$(RM) -rv $(TARGET_DIR) $(RPRT)
