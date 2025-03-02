@@ -7,4 +7,4 @@ set grid
 
 set output "plots/pictures/worst_and_complexity.png"
 plot "plots/files/worst_and_complexity.dat" using 1:2 title "Наихудший вариант" with linespoints, \
-     "plots/files/worst_and_complexity.dat" using 1:3 title "O(M^2)" with linespoints
+     "plots/files/worst_and_complexity.dat" using 1:3 title "O(M(logM))" with linespoints
