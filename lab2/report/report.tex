@@ -130,5 +130,80 @@
 	\section*{Описание метода/модели}
 	\addcontentsline{toc}{section}{Описание метода/модели}
 	\large
+	\textit{Пирамидальная сортировка (или, Сортировка кучей)} - это метод сортировки на основе сравнения, основанный на двоичной куче данных. При сортировке кучей мы используем двоичную кучу, чтобы быстро находить и перемещать максимальный элемент за \textit{O(logN)} вместо \textit{O(N)} и, следовательно, достигать временной сложности \textit{O(NlogN)}.
+	Ход алгоритма:
+	\begin{enumerate}
+		\item Переставляем элементы массива так, чтобы они образовывали максимальную кучу;
+		\item Повторяем следующие шаги до тех пор, пока куча не будет содержать только один элемент:
+		\begin{enumerate}
+			\item Меняем местами корневой элемент кучи с последним элементом кучи;
+			\item Удаляем последний элемент кучи;
+			\item Складываем в кучу остальные элементы кучи.
+		\end{enumerate}
+		\item Получаем отсортированный массив.
+	\end{enumerate}
+	Анализ сложности пирамидальной сортировки:
+	\begin{itemize}
+		\item \textbf{Лучший вариант: O(\( N \))}, если массив уже отсортирован;
+		\item \textbf{Средний вариант: O(\( N(logN) \))}, если массив упорядочен случайным образом;
+		\item \textbf{Наихудший вариант: O(\( N(logN) \))}, если массив находится в обратном порядке, \par
+		где N - количество элементов в массиве.
+	\end{itemize}
+	\textit{Преимущества}:
+	\begin{itemize}
+		\item Эффективная временная сложность;
+		\item Использование памяти может быть минимальным;
+		\item Простота.
+	\end{itemize}
+	\textit{Недостатки}:
+	\begin{itemize}
+		\item Дорогостоящая, так как константы выше по сравнению с сортировкой слиянием;
+		\item Неэффективен из-за высоких констант во временной сложности.
+	\end{itemize}
+
+	\section*{Выполнение задачи}
+	\addcontentsline{toc}{section}{Выполнение задачи}
+	Алгоритм пирамидальной сортировки реализован на языке \textit{C++}. Построение графиков проводить с помощью программы \textit{GNUplot}.
+
+	\textit{"main"} функция работает с циклом, в ходе которого производится расчёт минимального, максимального и среднего времени на сортировку массива размером \textit{M}. Каждая серия просчитывается по 20 раз. В итоге получаются данные, выведенные в определенные файлы, с помощью которых впоследствии строятся графики.
+	\lstset{style=mystyle}
+	\begin{lstlisting}[language=C++]
+
+	\end{lstlisting}
+
+	\textit{"generationArray"} функция принимает два аргумента: array - массив, size - размер массива. Формирует массив размера size, который заполняется случайными числами с плавающей точкой от -1 до 1.
+	\lstset{style=mystyle}
+	\begin{lstlisting}[language=C++]
+		void generationArray(double array[], int size) {
+			std::random_device rd;
+			std::mt19937 engine(rd());
+			std::uniform_real_distribution<double> gen(-1.0, 1.0);
+
+			for (int i = 0; i < size; i++)
+				array[i] = gen(engine);
+		}		
+	\end{lstlisting}
+
+	\newpage
+	\vfill
+
+	\begin{figure}
+		\includegraphics[width=300pt]{worst_and_complexity.png}
+	\end{figure}
+	\begin{figure}
+		\includegraphics[width=300pt]{average_best_worst.png}
+	\end{figure}
+	\begin{figure}
+		\includegraphics[width=300pt]{heap_calls.png}
+	\end{figure}
+	\begin{figure}
+		\includegraphics[width=300pt]{inner_heap_ratio.png}
+	\end{figure}
+
+	\vfill
+	\clearpage
+
+	\section*{Выводы}
+	\addcontentsline{toc}{section}{Выводы}
 
 \end{document}
