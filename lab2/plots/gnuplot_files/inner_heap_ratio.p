@@ -1,4 +1,4 @@
-set terminal pngcairo size 900,900
+set terminal pngcairo size 1000,1000
 
 set title "Расчётная кривая процентного соотношения вызовов внутренней функции к общему вызову функции"
 set xlabel "Размер массива (M)" 
