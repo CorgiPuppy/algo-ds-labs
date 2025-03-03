@@ -11,7 +11,7 @@ SRC := $(wildcard $(SRC_DIR)/*.cpp)
 OBJ := $(patsubst $(SRC_DIR)/%.cpp, $(TARGET_DIR)/%.o, $(SRC))
 GNP := $(wildcard $(GNUPLOT_DIR)/*.p)
 
-CPPC := g==
+CPPC := g++
 CPPFLAGS := -lpthread -Wall
 GNPLT := gnuplot
 PDFLTX := pdflatex
@@ -21,7 +21,7 @@ OUTPUT := --output-directory
 
 .PHONY: all
 
-all: clean-reoprt run-src compile-gnp run-report clean-aux clean-target
+all: clean-report run-src compile-gnp run-report clean-aux clean-target
 
 run-src: $(EXE)
 	@echo "Running.."
