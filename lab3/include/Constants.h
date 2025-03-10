@@ -9,8 +9,9 @@ namespace Constants {
 	const std::vector<std::string> lastNames = { "Zolotukhin", "Burychev", "Kiseleva", "Koshkarev", "Akashev"  };
 	const std::vector<std::string> firstNames = { "Andrey", "Leonid", "Alexandra", "Ivan", "Zakhar" };
 	const std::vector<std::string> middleNames = { "Alexandrovich", "Vladimirovich", "Maximovna", "Mikhailovich", "Valeryevich" };
-	const int min_year = 1950;
-	const int max_year = 2025;
+	const int currentYear = 2025;
+	const int min_year = 1980;
+	const int max_year = 2019;
 	const int min_month = 1;
 	const int max_month = 12;
 	const int min_day = 1;
