@@ -1,7 +1,7 @@
 #ifndef DOUBLY_LINKED_LIST_H
 #define DOUBLY_LINKED_LIST_H
 
-#include <cstring>
+#include <algorithm>
 
 #include "LinkedList.h"
 
@@ -69,6 +69,33 @@ class DoublyLinkedList : public LinkedList<T> {
 
 				current = current->next;
 			}
+		}
+
+		void shuffle() {
+			if (this->size <= 1)
+				std::cerr << "There isn't anything to shuffle!";
+
+			std::vector<T> elements;
+			for (typename DoublyLinkedList<T>::Iterator it = this->begin(); it != this->end(); ++it)
+				elements.push_back(*it);
+
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::shuffle(elements.begin(), elements.end(), gen);
+
+			this->clear();
+			for (const T &element : elements)
+				this->insertEnd(element);
+		}
+
+		void clear() {
+			while (this->head != nullptr) {
+				Node<T>* temp = this->head;
+				this->head = this->head->next;
+				delete temp;
+			}
+			this->tail = nullptr;
+			this->size = 0;
 		}
 };
 
