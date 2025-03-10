@@ -49,7 +49,7 @@ class DoublyLinkedList : public LinkedList<T> {
 		void deleteNode(const T &value) {
 			Node<T> *current = this->head;
 			while (current != nullptr) {
-				if (strcmp(current->data, value) == 0) {
+				if (current->data == value) {
 					if (current->prev != nullptr)
 						current->prev->next = current->next;
 					else
@@ -60,7 +60,6 @@ class DoublyLinkedList : public LinkedList<T> {
 					else
 						this->tail = current->prev;
 					
-					delete [] current->data;
 					delete current;
 
 					this->size--;
