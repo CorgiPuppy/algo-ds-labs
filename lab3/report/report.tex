@@ -154,6 +154,227 @@
 
 	\section*{Выполнение задачи}
 	\addcontentsline{toc}{section}{Выполнение задачи}
+	Двусвязный список реализован на языке \textit{C++}. Построение графиков с помощью программы \textit{GNUplot}.
+
+	\textit{"main"} функция работает с вызовом методов для выполнения задания
+	\lstset{style=mystyle}
+	\begin{lstlisting}[language=C++]
+		int main() {
+			srand(time(0));
+
+			testIntegers();
+			testStrings();
+			testPersons();
+			testShuffle();
+			simulation();
+
+			return 0;
+		}
+	\end{lstlisting}
+	\par
+	\textit{"Node"} класс
+	\lstset{style=mystyle}
+	\begin{lstlisting}[language=C++]
+		template <typename T>
+		class Node {
+			public:
+				T data;
+				Node<T> *prev;
+				Node<T> *next;
+
+				Node(const T &value) : data(value), prev(nullptr), next(nullptr) {}
+		};
+	\end{lstlisting}
+	\par
+	\textit{"LinkedList"} класс
+	\lstset{style=mystyle}
+	\begin{lstlisting}[language=C++]
+		template <typename T>
+		class LinkedList {
+			protected:
+				int size;
+				Node<T> *head;
+				Node<T> *tail;
+
+			public:
+				LinkedList() : size(0), head(nullptr), tail(nullptr) {}
+
+				void insertFront(const T &value) {
+					Node<T> *newNode = new Node<T>(value);
+					if (head == nullptr) {
+						head = newNode;
+						tail = newNode;
+					} else {
+						newNode->next = head;
+						head->prev = newNode;
+						head = newNode;
+					}
+					
+					size++;
+				}
+
+				bool isEmpty() const { return size == 0; }
+
+				int getSize() const { return size; }
+
+				class Iterator {
+					private:
+						Node<T> *current;
+
+					public:
+						Iterator(Node<T> *node) : current(node) {}
+
+						T& operator*() const { return current->data; }
+
+						Iterator& operator++() {
+							if (current)
+								current = current->next;
+
+							return *this;
+						}
+
+						Iterator& operator--() {
+							if (current)
+								current = current->prev;
+
+							return *this;
+						}
+
+						bool operator!=(const Iterator &other) const { return current != other.current; }
+				};
+
+				Iterator begin() const { return Iterator(head); }
+
+				Iterator end() const { return Iterator(nullptr); }
+		};
+	\end{lstlisting}
+	\par
+	\textit{"DoublyLinkedList"} класс
+	\lstset{style=mystyle}
+	\begin{lstlisting}[language=C++]
+		template <typename T>
+		class DoublyLinkedList : public LinkedList<T> {
+			public:
+				void insertEnd(const T& value) {
+					Node<T> *newNode = new Node<T>(value);
+					if (this->head == nullptr) {
+						this->head = newNode;
+						this->tail = newNode;
+					} else {
+						newNode->prev = this->tail;
+						this->tail->next = newNode;
+						this->tail = newNode;
+					}
+
+					this->size++;
+				}
+
+				void insertAtPosition(const T &value, int position) {
+					if (position < 0 || position > this->size)
+						throw std::out_of_range("The position is out of range.");
+
+					if (position == 0)
+						this->insertFront(value);
+					else if (position == this->size)
+						this->insertEnd(value);
+					else {
+						Node<T> *newNode = new Node<T>(value);
+						Node<T> *current = this->head;
+
+						for (int i = 0; i < position - 1; i++)
+							current = current->next;
+
+						newNode->next = current->next;
+						newNode->prev = current;
+						current->next->prev = newNode;
+						current->next = newNode;
+
+						this->size++;
+					}
+				}
+
+				void deleteNode(const T &value) {
+					Node<T> *current = this->head;
+					while (current != nullptr) {
+						if (current->data == value) {
+							if (current->prev != nullptr)
+								current->prev->next = current->next;
+							else
+								this->head = current->next;
+
+							if (current->next != nullptr)
+								current->next->prev = current->prev;
+							else
+								this->tail = current->prev;
+							
+							delete current;
+
+							this->size--;
+
+							break;
+						}
+
+						current = current->next;
+					}
+				}
+
+				void shuffle() {
+					if (this->size <= 1)
+						std::cerr << "There isn't anything to shuffle!";
+
+					std::vector<T> elements;
+					for (typename DoublyLinkedList<T>::Iterator it = this->begin(); it != this->end(); ++it)
+						elements.push_back(*it);
+
+					std::random_device rd;
+					std::mt19937 gen(rd());
+					std::shuffle(elements.begin(), elements.end(), gen);
+
+					this->clear();
+					for (const T &element : elements)
+						this->insertEnd(element);
+				}
+
+				void clear() {
+					while (this->head != nullptr) {
+						Node<T>* temp = this->head;
+						this->head = this->head->next;
+						delete temp;
+					}
+					this->tail = nullptr;
+					this->size = 0;
+				}
+		};
+	\end{lstlisting}
+	\par
+	\textit{"testIntegers"} функция
+	\lstset{style=mystyle}
+	\begin{lstlisting}[language=C++]
+		void testIntegers() {
+			DoublyLinkedList<int> list;
+
+			int sum = 0;
+			int minValue = 1001;
+			int maxValue = -1001;
+
+			for (int i = 0; i < 1000; i++) {
+				int value = getRandomNumber(-1000, 1000);
+				list.insertEnd(value);
+				sum += value;
+				
+				if (value < minValue) minValue = value;
+				if (value < maxValue) maxValue = value;
+			}
+
+			double average = static\_cast<double>(sum) / list.getSize();
+
+			std::cout << "Test: Integers" << std::endl;
+			std::cout << "Sum: " << sum << std::endl;
+			std::cout << "Average: " << average << std::endl;
+			std::cout << "Min: " << minValue << std::endl;
+			std::cout << "Max: " << maxValue << std::endl;
+		}
+	\end{lstlisting}
 
 	\newpage
 	\vfill
@@ -176,5 +397,5 @@
 	
 	\section*{Выводы}
 	\addcontentsline{toc}{section}{Выводы}
-
+	Дву
 \end{document}
