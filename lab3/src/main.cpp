@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <ctime>
+#include <vector>
 
 #include "Constants.h"
 #include "../include/DoublyLinkedList.h"
@@ -35,39 +36,31 @@ void testIntegers() {
 }
 
 void testStrings() {
-	DoublyLinkedList<char*> list;
+	DoublyLinkedList<std::string> list;
 
-	const char* strings[] = { "BMW", "Tesla", "Toyota", "Ford", "Honda", "Audi", "Porsche", "Hyundai", "Lamborghini", "Ferrari" };
+	std::vector<std::string> strings = { "BMW", "Tesla", "Toyota", "Ford", "Honda", "Audi", "Porsche", "Hyundai", "Lamborghini", "Ferrari" };
 
-	for (int i = 0; i < 10; i++) {
-		char* str = new char[strlen(strings[i]) + 1];
-		strcpy(str, strings[i]);
+	for (std::string &str : strings)
 		list.insertEnd(str);
-	}
 
 	std::cout << "Initial list: ";
-	for (DoublyLinkedList<char*>::Iterator it = list.begin(); it != list.end(); ++it)
+	for (DoublyLinkedList<std::string>::Iterator it = list.begin(); it != list.end(); ++it)
 		std::cout << *it << " ";
 	std::cout << std::endl;
 
 	list.deleteNode("Hyundai");	
 
 	std::cout << "The list after deletion " << "Hyundai: ";
- 	for (DoublyLinkedList<char*>::Iterator it = list.begin(); it != list.end(); ++it)
+ 	for (DoublyLinkedList<std::string>::Iterator it = list.begin(); it != list.end(); ++it)
 		std::cout << *it << " ";
 	std::cout << std::endl;
 
-	char* dodge = new char[strlen("Dodge") + 1];
-	strcpy(dodge, "Dodge");
-	list.insertAtPosition(dodge, 4);
+	list.insertAtPosition("Dodge", 4);
 
 	std::cout << "The list after insertion " << "Dodge at the 4th position: ";
- 	for (DoublyLinkedList<char*>::Iterator it = list.begin(); it != list.end(); ++it)
+ 	for (DoublyLinkedList<std::string>::Iterator it = list.begin(); it != list.end(); ++it)
 		std::cout << *it << " ";
 	std::cout << std::endl;
-
-	for (DoublyLinkedList<char*>::Iterator it = list.begin(); it != list.end(); ++it)
-		delete [] *it;
 }
 
 int main() {
