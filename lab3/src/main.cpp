@@ -34,8 +34,9 @@ void testStrings();
 std::string generateBirthDate();
 int calculateAge(const std::string &);
 void testPersons();
+void testShuffle();
 void simulation();
-void insertionSort(DoublyLinkedList<double>&, long long&, long long&);
+void insertionSort(DoublyLinkedList<double>, long long&, long long&);
 void generateList(DoublyLinkedList<double>&, int);
 
 int main() {
@@ -44,6 +45,7 @@ int main() {
 	testIntegers();
 	testStrings();
 	testPersons();
+	testShuffle();
 	simulation();
 
 	return 0;
@@ -116,7 +118,7 @@ std::string generateBirthDate() {
 
 int calculateAge(const std::string &birthDate) {
 	int birthYear = std::stoi(birthDate.substr(6, 4));
-	int currentYear = 2025;
+	int currentYear = Constants::currentYear;
 	return currentYear - birthYear;
 }
 
@@ -146,10 +148,29 @@ void testPersons() {
 	int dontFit = list.getSize() - youngList.getSize() - oldList.getSize();
 
 	std::cout << "Test: Persons" << std::endl;
-    std::cout << "Total persons: " << list.getSize() << std::endl;
+    std::cout << "Amount of persons: " << list.getSize() << std::endl;
     std::cout << "Young (<20): " << youngList.getSize() << std::endl;
     std::cout << "Old (>30): " << oldList.getSize() << std::endl;
-    std::cout << "Not filtered: " << dontFit << std::endl;
+    std::cout << "Don't fit: " << dontFit << std::endl;
+}
+
+void testShuffle() {
+	DoublyLinkedList<int> list;
+
+	for (int i = 0; i < 11; i++)
+		list.insertEnd(i);
+	
+	std::cout << "An original list: ";
+	for (DoublyLinkedList<int>::Iterator it = list.begin(); it != list.end(); ++it)
+		std::cout << *it << " ";
+	std::cout << std::endl;
+
+	list.shuffle();
+
+	std::cout << "The shuffled list: ";
+	for (DoublyLinkedList<int>::Iterator it = list.begin(); it != list.end(); ++it)
+		std::cout << *it << " ";
+	std::cout << std::endl;
 }
 
 void simulation() {
@@ -164,7 +185,7 @@ void simulation() {
         std::cerr << "Ошибка открытия файла!" << std::endl;
     }
 
-    for (int episode = 0; episode < Constants::M - 2; episode++) {
+    for (int episode = 0; episode < Constants::M; episode++) {
         int size = Constants::sizes[episode];
         DoublyLinkedList<double> list;
 
@@ -174,10 +195,11 @@ void simulation() {
         long long total_swaps = 0;
         long long total_passes = 0;
 
-        for (int attempt = 0; attempt < Constants::amount_of_attempts - 19; attempt++) {
+        for (int attempt = 0; attempt < Constants::amount_of_attempts; attempt++) {
             long long amount_of_repeated_passes = 0;
             long long amount_of_swaps = 0;
 
+			list.clear();
             generateList(list, size);
 
             std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
@@ -219,7 +241,7 @@ void simulation() {
     average_passes.close();
 }
 
-void insertionSort(DoublyLinkedList<double>& list, long long& repeated_passes, long long& swaps) {
+void insertionSort(DoublyLinkedList<double> list, long long& repeated_passes, long long& swaps) {
 	DoublyLinkedList<double>::Iterator it = list.begin();
 	++it;
 
