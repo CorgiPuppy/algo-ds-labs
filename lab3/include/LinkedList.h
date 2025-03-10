@@ -47,6 +47,13 @@ class LinkedList {
 					return *this;
 				}
 
+				Iterator& operator--() {
+					if (current)
+						current = current->prev;
+
+					return *this;
+				}
+
 				bool operator!=(const Iterator &other) const { return current != other.current; }
 		};
 
