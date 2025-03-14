@@ -8,7 +8,7 @@ RPRT := $(REPORT_DIR)/report.pdf
 EXE := $(TARGET_DIR)/main
 INC := $(wildcard $(INC_DIR)/*.h)
 SRC := $(wildcard $(SRC_DIR)/*.cpp)
-OBJ := $(parsubst $(SRC_DIR)/%.cpp, $(TARGET_DIR)/%.o, $(SRC))
+OBJ := $(patsubst $(SRC_DIR)/%.cpp, $(TARGET_DIR)/%.o, $(SRC))
 GNP := $(wildcard $(GNUPLOT_DIR)/*.p)
 
 CPPC := g++
