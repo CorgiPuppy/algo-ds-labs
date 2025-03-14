@@ -46,7 +46,6 @@ int main() {
 	testStrings();
 	testPersons();
 	testShuffle();
-	simulation();
 
 	return 0;
 }
