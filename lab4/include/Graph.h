@@ -5,6 +5,7 @@
 
 #include "Node.h"
 #include "Edge.h"
+#include "Queue.h"
 
 class Graph {
 	private:
@@ -154,8 +155,66 @@ class Graph {
 
 			return edgeList;
 		}	
+
 		void freeEdgeList(Edge* edgeList) const {
 			delete [] edgeList;
+		}
+
+		void bfs(int start, int end, int& pathLength, int*& path) const {
+			bool* discovered = new bool[nVertices + 1];
+			bool* processed = new bool[nVertices + 1];
+			int* parent = new int[nVertices + 1];
+
+			for (int i = 1; i <= nVertices; i++) {
+				discovered[i] = processed[i] = false;
+				parent[i] = -1;
+			}
+
+			Queue q(nVertices);
+			q.enqueue(start);
+			discovered[start] = true;
+
+			while (!q.isEmpty()) {
+				int v = q.dequeue();
+				processed[v] = true;
+
+				Node* current = edges[v];
+				while (current) {
+					int y = current->vertex;
+					if (!processed[y] || directed) {
+						if (!discovered[y]) {
+							q.enqueue(y);
+							discovered[y] = true;
+							parent[y] = v;
+						}
+					}
+						
+					current = current->next;
+				}
+			}
+
+			if (!processed[end]) {
+				pathLength = 0;
+				path = nullptr;
+			} else {
+				pathLength = 0;
+				int current = end;
+				while (current != -1) {
+					pathLength++;
+					current = parent[current];
+				}
+
+				path = new int[pathLength];
+				current = end;
+				for (int i = pathLength - 1; i >= 0; i--) {
+					path[i] = current;
+					current = parent[current];
+				}
+			}
+
+			delete [] discovered;
+			delete [] processed;
+			delete [] parent;
 		}
 
 		int getNvertices() const { return nVertices; }
