@@ -48,7 +48,7 @@ class Graph {
 
 			EdgeNode* current = edges[src];
 			while (current) {
-				if (current->vertex = dest)
+				if (current->vertex == dest)
 					return;
 				current = current->next;
 			}
@@ -63,7 +63,7 @@ class Graph {
 			if (!directed) {
 				EdgeNode* reverseEdge = new EdgeNode(src);
 				reverseEdge->next = edges[dest];
-				edges[dest] = newEdge;
+				edges[dest] = reverseEdge;
 				outDegree[dest]++;
 				inDegree[src]++;
 			}
@@ -98,7 +98,7 @@ class Graph {
 		}
 
 		void freeAdjacencyMatrix(int** matrix) const {
-			for (int i = 0; i < nVertices; i++)
+			for (int i = 0; i <= nVertices; i++)
 				delete [] matrix[i];
 
 			delete [] matrix;
