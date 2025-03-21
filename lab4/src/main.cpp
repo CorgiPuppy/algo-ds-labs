@@ -60,24 +60,41 @@ int main() {
 		int start = std::rand() % vertices + 1;
 		int end = std::rand() % vertices + 1;
 		std::cout << "Поиск кратчайшего пути из вершины " << start << " в вершину " << end << std::endl;
-		int pathLength = 0;
-		int* path = nullptr;
-		clock_t begin = clock();
-		graph.bfs(start, end, pathLength, path);
-		clock_t endTime = clock();
-		double elapsed_secs = double(endTime - begin) / CLOCKS_PER_SEC;
-		if (pathLength > 0) {
+		int bfsPathLength = 0;
+		int* bfsPath = nullptr;
+		clock_t bfsBegin = clock();
+		graph.bfs(start, end, bfsPathLength, bfsPath);
+		clock_t bfsEnd = clock();
+		double bfsElapsed = double(bfsEnd - bfsBegin) / CLOCKS_PER_SEC;
+		if (bfsPathLength > 0) {
 			std::cout << "Кратчайший путь: ";
-			for (int i = 0; i < pathLength; i++) {
-				std::cout << path[i];
-				if (i < pathLength - 1) std::cout << " -> ";
+			for (int i = 0; i < bfsPathLength; i++) {
+				std::cout << bfsPath[i];
+				if (i < bfsPathLength - 1) std::cout << " -> ";
 			}
 			std::cout << std::endl;
 		} else
-			std::cout << "Путь не найден." << std::endl;
-		std::cout << "Время выполнения: " << elapsed_secs << " секунд" << std::endl;
+			std::cout << "BFS: Путь не найден." << std::endl;
+		std::cout << "Время выполнения: " << bfsElapsed << " секунд" << std::endl;
 		
-		delete [] path;
+		delete [] bfsPath;
+		
+		int dfsPathLength = 0;
+		int* dfsPath = nullptr;
+		clock_t dfsBegin = clock();
+		graph.dfs(start, end, dfsPathLength, dfsPath);
+		clock_t dfsEnd = clock();
+		double dfsElapsed = double(dfsEnd - dfsBegin) / CLOCKS_PER_SEC;
+		if (dfsPathLength > 0) {
+			std::cout << "DFS: Кратчайший путь: ";
+			for (int i = 0; i < dfsPathLength; i++) {
+				std::cout << dfsPath[i];
+				if (i < dfsPathLength - 1) std::cout << " -> ";
+			}
+			std::cout << std::endl;
+		} else
+			std::cout << "DFS: Путь не найден." << std::endl;	
+		std::cout << "Время выполнения: " << dfsElapsed << " секунд" << std::endl;
 
 		std::cout << std::endl;
     }
