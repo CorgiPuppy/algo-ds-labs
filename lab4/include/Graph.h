@@ -104,6 +104,39 @@ class Graph {
 			delete [] matrix;
 		}
 
+		int** getIncidenceMatrix() const {
+			int** matrix = new int*[nVertices + 1];
+			for (int i = 0; i <= nVertices; i++)
+				matrix[i] = new int[nEdges + 1]();
+
+			int edgeIndex = 1;
+			for (int i = 1; i <= nVertices; i++) {
+				EdgeNode* current = edges[i];
+				while (current) {
+					if (directed || i < current->vertex) {
+						if (directed) {
+							matrix[i][edgeIndex] = -1;
+							matrix[current->vertex][edgeIndex] = 1;
+						} else {
+							matrix[i][edgeIndex] = 1;
+							matrix[current->vertex][edgeIndex] = 1;
+						}
+						edgeIndex++;
+					}
+					current = current->next;
+				}
+			}
+
+			return matrix;
+		}
+
+		void freeIncidenceMatrix(int** matrix) const {
+			for (int i = 0; i <= nVertices; i++)
+				delete [] matrix[i];
+
+			delete [] matrix;
+		}
+
 		int getNvertices() const { return nVertices; }
 
 		int getNedges() const { return nEdges; }
