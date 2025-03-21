@@ -104,6 +104,8 @@ class Graph {
 			delete [] matrix;
 		}
 
+		int getNvertices() const { return nVertices; }
+
 		int getNedges() const { return nEdges; }
 
 		int getOutDegree(int vertex) const { return outDegree[vertex]; }
