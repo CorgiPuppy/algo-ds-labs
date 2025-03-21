@@ -48,8 +48,10 @@ int main() {
         }
         graph.freeIncidenceMatrix(incidenceMatrix);
 
-        std::cout << std::endl;
+		std::cout << "Список смежности:" << std::endl;
+		graph.printGraph();
 
+		std::cout << std::endl;
     }
 
     return 0;
