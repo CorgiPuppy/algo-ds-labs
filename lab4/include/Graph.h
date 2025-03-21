@@ -6,6 +6,7 @@
 #include "Node.h"
 #include "Edge.h"
 #include "Queue.h"
+#include "Stack.h"
 
 class Graph {
 	private:
@@ -204,6 +205,63 @@ class Graph {
 					current = parent[current];
 				}
 
+				path = new int[pathLength];
+				current = end;
+				for (int i = pathLength - 1; i >= 0; i--) {
+					path[i] = current;
+					current = parent[current];
+				}
+			}
+
+			delete [] discovered;
+			delete [] processed;
+			delete [] parent;
+		}
+
+		void dfs(int start, int end, int& pathLength, int*& path) const {
+			bool* discovered = new bool[nVertices + 1];
+			bool* processed = new bool[nVertices + 1];
+			int* parent = new int[nVertices + 1];
+
+			for (int i = 1; i <= nVertices; i++) {
+				discovered[i] = processed[i] = false;
+				parent[i] = -1;
+			}
+
+			Stack stack(nVertices);
+			stack.push(start);
+			discovered[start] = true;
+
+			while (!stack.isEmpty()) {
+				int v = stack.pop();
+				if (!processed[v]) {
+					processed[v] = true;
+
+					Node* current = edges[v];
+					while (current) {
+						int y = current->vertex;
+						if (!discovered[y]) {
+							stack.push(y);
+							discovered[y] = true;
+							parent[y] = v;
+						}
+						
+						current = current->next;
+					}
+				}
+			}
+
+			if (!processed[end]) {
+				pathLength = 0;
+				path = nullptr;
+			} else {
+				pathLength = 0;
+				int current = end;
+				while (current != -1) {
+					pathLength++;
+					current = parent[current];
+				}
+				
 				path = new int[pathLength];
 				current = end;
 				for (int i = pathLength - 1; i >= 0; i--) {
