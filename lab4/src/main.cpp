@@ -3,9 +3,9 @@
 
 int main() {
     int minVertices = 2;
-    int maxVertices = 10;
+    int maxVertices = 20;
     int minEdges = 2;
-    int maxEdges = 10;
+    int maxEdges = 50;
     int maxDegree = 10;
     bool directed = true;
 
@@ -50,6 +50,12 @@ int main() {
 
 		std::cout << "Список смежности:" << std::endl;
 		graph.printGraph();
+
+		Edge* edgeList = graph.getEdgeList();
+		std::cout << "Список рёбер:" << std::endl;
+		for (int i = 0; i < edges; i++)
+			std::cout << "Ребро " << i + 1 << ": (" << edgeList[i].src << ", " << edgeList[i].dest << ")" << std::endl;
+		graph.freeEdgeList(edgeList);
 
 		std::cout << std::endl;
     }
