@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "Node.h"
+#include "Edge.h"
 
 class Graph {
 	private:
@@ -135,6 +136,26 @@ class Graph {
 				delete [] matrix[i];
 
 			delete [] matrix;
+		}
+		
+		Edge* getEdgeList() const {
+			Edge* edgeList = new Edge[nEdges];
+			int edgeIndex = 0;
+
+			for (int i = 1; i <= nVertices; i++) {
+				Node* current = edges[i];
+				while (current) {
+					if (directed || i < current->vertex) {
+						edgeList[edgeIndex++] = Edge(i, current->vertex);
+					}
+					current = current->next;
+				}
+			}
+
+			return edgeList;
+		}	
+		void freeEdgeList(Edge* edgeList) const {
+			delete [] edgeList;
 		}
 
 		int getNvertices() const { return nVertices; }
