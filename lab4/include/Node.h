@@ -3,9 +3,9 @@
 
 class Node {
 	public:
-		int data;
-		EdgeNode* next;
-		EdgeNode(int d) : data(d), next(nullptr) {}
+		int vertex;
+		Node* next;
+		Node(int v) : vertex(v), next(nullptr) {}
 };
 
 #endif
