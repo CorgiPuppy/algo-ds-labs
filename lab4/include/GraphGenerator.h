@@ -2,6 +2,7 @@
 #define GRAPH_GENERATOR_H
 
 #include <ctime>
+#include <cstdlib>
 
 #include "Graph.h"
 
@@ -35,7 +36,7 @@ class GraphGenerator {
 				int src = std::rand() % vertices + 1;
 				int dest = std::rand() % vertices + 1;
 
-				if (graph.getDegree(src) < maxDegree && graph.getDegree(dest) < maxDegree)
+				if (graph.getOutDegree(src) < maxDegree && graph.getInDegree(dest) < maxDegree)
 					graph.addEdge(src, dest);	
 			}
 
