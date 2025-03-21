@@ -2,11 +2,11 @@
 #include "../include/GraphGenerator.h"
 
 int main() {
-    int minVertices = 2;
-    int maxVertices = 20;
-    int minEdges = 2;
-    int maxEdges = 50;
-    int maxDegree = 10;
+    int minVertices = 100;
+    int maxVertices = 1000;
+    int minEdges = 100;
+    int maxEdges = 1000;
+    int maxDegree = 100;
     bool directed = false;
 
     GraphGenerator generator(minVertices, maxVertices, minEdges, maxEdges, maxDegree, directed);
@@ -67,7 +67,7 @@ int main() {
 		clock_t bfsEnd = clock();
 		double bfsElapsed = double(bfsEnd - bfsBegin) / CLOCKS_PER_SEC;
 		if (bfsPathLength > 0) {
-			std::cout << "Кратчайший путь: ";
+			std::cout << "BFS: Кратчайший путь: ";
 			for (int i = 0; i < bfsPathLength; i++) {
 				std::cout << bfsPath[i];
 				if (i < bfsPathLength - 1) std::cout << " -> ";
