@@ -36,7 +36,7 @@ class Stack {
 			if (top == -1) return -1;
 
 			int value = data[top];
-			top++;
+			top--;
 			return value;
 		}
 
