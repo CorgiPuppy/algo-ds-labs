@@ -7,7 +7,7 @@ int main() {
     int minEdges = 2;
     int maxEdges = 10;
     int maxDegree = 10;
-    bool directed = false;
+    bool directed = true;
 
     GraphGenerator generator(minVertices, maxVertices, minEdges, maxEdges, maxDegree, directed);
 
@@ -30,16 +30,26 @@ int main() {
                       << ", входящая степень = " << graph.getInDegree(j) << std::endl;
         }
 
-        int** matrix = graph.getAdjacencyMatrix();
+        int** adjacencyMatrix = graph.getAdjacencyMatrix();
         std::cout << "Матрица смежности (первые 5х5 элементов):" << std::endl;
         for (int row = 1; row <= vertices; row++) {
             for (int col = 1; col <= vertices; col++)
-                std::cout << matrix[row][col] << " ";
+                std::cout << adjacencyMatrix[row][col] << " ";
             std::cout << std::endl;
         }
-        graph.freeAdjacencyMatrix(matrix);
+        graph.freeAdjacencyMatrix(adjacencyMatrix);
+
+        int** incidenceMatrix = graph.getIncidenceMatrix();
+        std::cout << "Матрица инцидентности (первые 5х5 элементов):" << std::endl;
+        for (int row = 1; row <= vertices; row++) {
+            for (int col = 1; col <= edges; col++)
+                std::cout << incidenceMatrix[row][col] << " ";
+            std::cout << std::endl;
+        }
+        graph.freeIncidenceMatrix(incidenceMatrix);
 
         std::cout << std::endl;
+
     }
 
     return 0;
