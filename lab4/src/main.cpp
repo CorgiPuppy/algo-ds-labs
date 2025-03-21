@@ -7,7 +7,7 @@ int main() {
     int minEdges = 2;
     int maxEdges = 50;
     int maxDegree = 10;
-    bool directed = true;
+    bool directed = false;
 
     GraphGenerator generator(minVertices, maxVertices, minEdges, maxEdges, maxDegree, directed);
 
@@ -56,6 +56,28 @@ int main() {
 		for (int i = 0; i < edges; i++)
 			std::cout << "Ребро " << i + 1 << ": (" << edgeList[i].src << ", " << edgeList[i].dest << ")" << std::endl;
 		graph.freeEdgeList(edgeList);
+		
+		int start = std::rand() % vertices + 1;
+		int end = std::rand() % vertices + 1;
+		std::cout << "Поиск кратчайшего пути из вершины " << start << " в вершину " << end << std::endl;
+		int pathLength = 0;
+		int* path = nullptr;
+		clock_t begin = clock();
+		graph.bfs(start, end, pathLength, path);
+		clock_t endTime = clock();
+		double elapsed_secs = double(endTime - begin) / CLOCKS_PER_SEC;
+		if (pathLength > 0) {
+			std::cout << "Кратчайший путь: ";
+			for (int i = 0; i < pathLength; i++) {
+				std::cout << path[i];
+				if (i < pathLength - 1) std::cout << " -> ";
+			}
+			std::cout << std::endl;
+		} else
+			std::cout << "Путь не найден." << std::endl;
+		std::cout << "Время выполнения: " << elapsed_secs << " секунд" << std::endl;
+		
+		delete [] path;
 
 		std::cout << std::endl;
     }
