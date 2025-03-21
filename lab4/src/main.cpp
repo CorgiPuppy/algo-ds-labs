@@ -14,10 +14,11 @@ int main() {
     for (int i = 1; i <= 10; i++) {
         std::cout << "Генерация графа " << i << ":\n";
 
-        int vertices = minVertices + (i - 1);
-        int edges = minEdges + (i - 1);
-
         Graph graph = generator.generate();
+
+        int vertices = graph.getNvertices();
+        int edges = graph.getNedges();
+
         graph.printGraph();
 
         std::cout << "Количество вершин: " << vertices << std::endl;
@@ -31,8 +32,8 @@ int main() {
 
         int** matrix = graph.getAdjacencyMatrix();
         std::cout << "Матрица смежности (первые 5х5 элементов):" << std::endl;
-        for (int row = 1; row <= 5 && row <= vertices; row++) {
-            for (int col = 1; col <= 5 && col <= vertices; col++)
+        for (int row = 1; row <= vertices; row++) {
+            for (int col = 1; col <= vertices; col++)
                 std::cout << matrix[row][col] << " ";
             std::cout << std::endl;
         }
