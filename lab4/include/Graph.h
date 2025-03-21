@@ -3,11 +3,11 @@
 
 #include <iostream>
 
-#include "EdgeNode.h"
+#include "Node.h"
 
 class Graph {
 	private:
-		EdgeNode** edges;
+		Node** edges;
 		int* outDegree;
 		int* inDegree;
 		int nVertices;
@@ -16,7 +16,7 @@ class Graph {
 
 	public:
 		Graph(int vertices, bool isDirected) : nVertices(vertices),  nEdges(0), directed(isDirected) {
-			edges = new EdgeNode*[vertices + 1];
+			edges = new Node*[vertices + 1];
 			outDegree = new int[vertices + 1];
 			inDegree = new int[vertices + 1];
 
@@ -29,9 +29,9 @@ class Graph {
 
 		~Graph() {
 			for (int i = 1; i <= nVertices; i++) {
-				EdgeNode* current = edges[i];
+				Node* current = edges[i];
 				while (current) {
-					EdgeNode* temp = current;
+					Node* temp = current;
 					current = current->next;
 					delete temp;
 				}
@@ -46,14 +46,14 @@ class Graph {
 			if (src == dest)
 				return;
 
-			EdgeNode* current = edges[src];
+			Node* current = edges[src];
 			while (current) {
 				if (current->vertex == dest)
 					return;
 				current = current->next;
 			}
 
-			EdgeNode* newEdge = new EdgeNode(dest);
+			Node* newEdge = new Node(dest);
 			newEdge->next = edges[src];
 			edges[src] = newEdge;
 			outDegree[src]++;
@@ -61,7 +61,7 @@ class Graph {
 			nEdges++;
 
 			if (!directed) {
-				EdgeNode* reverseEdge = new EdgeNode(src);
+				Node* reverseEdge = new Node(src);
 				reverseEdge->next = edges[dest];
 				edges[dest] = reverseEdge;
 				outDegree[dest]++;
@@ -72,7 +72,7 @@ class Graph {
 		void printGraph() const {
 			for (int i = 1; i <= nVertices; i++) {
 				std::cout << "Вершина " << i << ": ";
-				EdgeNode* current = edges[i];
+				Node* current = edges[i];
 				while (current != nullptr) {
 					std::cout << current->vertex << " ";
 					current = current->next;
@@ -87,7 +87,7 @@ class Graph {
 				matrix[i] = new int[nVertices + 1]();
 
 			for (int i = 1; i <= nVertices; i++) {
-				EdgeNode* current = edges[i];
+				Node* current = edges[i];
 				while (current) {
 					matrix[i][current->vertex] = 1;
 					current = current->next;
@@ -111,7 +111,7 @@ class Graph {
 
 			int edgeIndex = 1;
 			for (int i = 1; i <= nVertices; i++) {
-				EdgeNode* current = edges[i];
+				Node* current = edges[i];
 				while (current) {
 					if (directed || i < current->vertex) {
 						if (directed) {
