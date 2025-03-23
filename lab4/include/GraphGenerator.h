@@ -26,9 +26,9 @@ class GraphGenerator {
 			std::srand(std::time(0));
 		}
 
-		Graph generate() {
-			int vertices = minVertices + std::rand() % (maxVertices + 1 - minVertices);
-			int edges = minEdges + std::rand() % (maxEdges + 1 - minEdges);
+		Graph generate(int iteration) {
+			int vertices = (minVertices * (iteration - 1) + std::rand() % (maxVertices + 1 - minVertices)) + (iteration - 1) * 100;
+			int edges = (minEdges * (iteration - 1) + std::rand() % (maxEdges + 1 - minEdges)) + (iteration - 1) * 100;
 
 			Graph graph(vertices, directed);
 
