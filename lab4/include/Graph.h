@@ -2,6 +2,8 @@
 #define GRAPH_H
 
 #include <iostream>
+#include <string>
+#include <fstream>
 
 #include "Node.h"
 #include "Edge.h"
@@ -273,6 +275,26 @@ class Graph {
 			delete [] discovered;
 			delete [] processed;
 			delete [] parent;
+		}
+
+		void generateDotFile(const std::string& filename) const {
+			std::ofstream dotFile(filename);
+			if (!dotFile.is_open()) {
+				std::cerr << "Error of opening file " << filename << " for writing." << std::endl;
+				return;
+			}
+
+			dotFile << (directed ? "digraph G {\n" : "graph G {\n");
+			for (int i = 1; i <= nVertices; i++) {
+				Node* current = edges[i];
+				while (current) {
+					if (directed || i <= current->vertex)
+						dotFile << " " << i << (directed ? " -> " : " -- ") << current->vertex << ";\n";
+					current = current->next;
+				}
+			}
+			dotFile << "}\n";
+			dotFile.close();
 		}
 
 		int getNvertices() const { return nVertices; }
