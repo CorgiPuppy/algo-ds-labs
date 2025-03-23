@@ -1,0 +1,14 @@
+# ignore ALL .log files
+*.log
+
+# ignore ALL .aux files
+*.aux
+
+# ignore ALL .toc files
+*.toc
+
+# ignore ALL .out files
+*.out
+
+# ignore ALL files in ANY directory named target
+target/
