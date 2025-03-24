@@ -5,6 +5,7 @@
 #include <cstdlib>
 
 #include "Graph.h"
+#include "Constants.h"
 
 class GraphGenerator {
 	private:
@@ -28,7 +29,7 @@ class GraphGenerator {
 			Graph graph(vertices);
 
 			for (int i = 1; i < vertices; i++) {
-				int weight = std::rand() % 20 + 1;
+				int weight = std::rand() % Constants::maxWeight + 1;
 				graph.addEdge(i, i + 1, weight);
 			}
 
@@ -36,7 +37,7 @@ class GraphGenerator {
 				int edges = minEdges + std::rand() % (maxEdges - minEdges + 1);
 				for (int j = 0; j < edges; j++) {
 					int dest = std::rand() % vertices + 1;
-					int weight = std::rand() % 20 + 1;
+					int weight = std::rand() % Constants::maxWeight + 1;
 					if (i != dest) {
 						graph.addEdge(i, dest, weight);
 					}
