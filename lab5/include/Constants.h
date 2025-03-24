@@ -3,10 +3,10 @@
 
 namespace Constants {
 	int maxWeight = 5;
-	int minVertices = 1;
-	int maxVertices = 5;
-	int minEdges = 1;
-	int maxEdges = 5;
+	int minVertices = 5;
+	int maxVertices = 9;
+	int minEdges = 5;
+	int maxEdges = 9;
 
     int nGraphs = 5;
     int printNelements = 5;
