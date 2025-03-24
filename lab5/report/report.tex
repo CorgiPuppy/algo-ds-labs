@@ -111,12 +111,92 @@
 	\section*{Описание метода/модели}
 	\addcontentsline{toc}{section}{Описание метода/модели}
 	\large
+	\textbf{Алгоритм Флойда-Уоршелла} предназначен для получения кратчайших путей между всеми парами вершин, существующих в графе. Результатом работы этого алгоритма является матрица \textit{NxN}, где \textit{N} - количество вершин. Особенностью является то, что в матрицах смежности для взвешенного графа нельзя использовать 0 для указания несуществующего пути, лучше использовать максимальное значение. \par
+	Ход алгоритма:
+	\begin{enumerate}
+		\item Поиск-всех-кратчайших-путей-Флойда(матрица смежности)
+		\item Инициируем 3 счётчика, 2 счётчика для матрицы и 1 для номера промежуточной вершины
+		\item Итерируем по счётчику промежуточных вершин до тех пор, пока не кончатся вершины
+		\item Итерируем по первому счётчику вершин до тех пор, пока не кончатся вершины
+		\item Итерируем по второму счётчику вершин до тех пор, пока не кончатся вершины
+		\item Считаем длину пути, используя промежуточную вершину как узловую точку, т.е. от вершины по первому счётчику до узловой плюс от узловой до вершины по второму счётчику
+		\item Проверяем, будет ли новый путь меньше предыдущего, уже найденного через другую вершину, и записываем новое значчение, если оно подходит.
+	\end{enumerate}
+	\par
+	Анализ сложности алгоритма Флойда-Уоршелла:
+	\begin{itemize}
+		\item \textbf{Лучший вариант: O(\( N^3 \))};
+		\item \textbf{Средний вариант: O(\( N^3 \))};
+		\item \textbf{Худший вариант: O(\( N^3 \))};
+	\end{itemize}
+	\par
+	\textit{Преимущества}:
+	\begin{itemize}
+		\item универсален;
+		\item простота использования;
+		\item эффективность.
+	\end{itemize}
+	\par
+	\textit{Недостатки}:
+	\begin{itemize}
+		\item сложность понимания;
+		\item работает медленно на больших графах.
+	\end{itemize}
 
 	\newpage
 
 	\section*{Выполнение задачи}
 	\addcontentsline{toc}{section}{Выполнение задачи}
+	Алгоритм Флойда-Уоршелла реализован на языке \textit{C++}. Построение графиков проводились с помощью программы \textit{GNUplot}. Построение графов демонстрировались с помощью \textit{Graphviz}.
 
+	\textit{"main"}
+	\lstset{style=mystyle}
+	\begin{lstlisting}[language=C++]
+		int main() {
+			double executionTimes[Constants::nTests] = {0.0};
+
+			for (int sizeIndex = 0; sizeIndex < Constants::nTests; sizeIndex++) {
+				GraphGenerator generator(Constants::minVertices[sizeIndex], Constants::maxVertices[sizeIndex], Constants::minEdges[sizeIndex], Constants::minEdges[sizeIndex]);
+
+				double totalTime = 0.0;
+
+				for (int graphIndex = 0; graphIndex < Constants::nGraphs; graphIndex++) {
+					Graph graph = generator.generate(sizeIndex);
+
+					std::cout << "Graph " << graphIndex + 1 << " with " << Constants::minVertices[sizeIndex] << " vertices:" << std::endl;
+					std::cout << "Adjacency matrix:" << std::endl;
+					graph.printAdjacencyMatrix();
+
+					auto start = std::chrono::high_resolution_clock::now();
+					graph.floydWarshall();
+					auto end = std::chrono::high_resolution_clock::now();
+
+					std::chrono::duration<double> elapsed = end - start;
+					totalTime += elapsed.count();
+					std::cout << "Time taken: " << elapsed.count() << " seconds" << std::endl;
+
+					std::stringstream dotFilename;
+					dotFilename << Constants::graphNdot << "size_" << Constants::minVertices[sizeIndex] << "_" << graphIndex + 1 << ".dot";
+					graph.generateDotFile(dotFilename.str());
+
+					std::stringstream pngFilename;
+					pngFilename << Constants::graphNpng << "size_" << Constants::minVertices[sizeIndex] << "_" << graphIndex + 1 << ".png";
+					std::string command = "dot -Tpng " + dotFilename.str() + " -o " + pngFilename.str();
+					system(command.c_str());
+				}
+				executionTimes[sizeIndex] = totalTime / Constants::nGraphs;
+			}
+
+			std::ofstream resultsFile(Constants::floyd_warshall);
+			if (resultsFile.is_open()) {
+				for (int i = 0; i < Constants::nTests; i++)
+					resultsFile << Constants::minVertices[i] << " " << executionTimes[i] << std::endl;
+				resultsFile.close();
+			} else std::cerr << "Error: Unable to open results file." << std::endl;
+
+			return 0;
+		}		
+	\end{lstlisting}
 	\newpage
 	\vfill
 
@@ -204,36 +284,12 @@
 		\caption{Граф 5 с 27 вершинами.}
 	\end{figure} 
 
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=300pt]{graph_size_35_1.png}
-		\caption{Граф 1 с 35 вершинами.}
-	\end{figure}
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=300pt]{graph_size_35_2.png}
-		\caption{Граф 2 с 35 вершинами.}
-	\end{figure}
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=300pt]{graph_size_35_3.png}
-		\caption{Граф 3 с 35 вершинами.}
-	\end{figure}
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=300pt]{graph_size_35_4.png}
-		\caption{Граф 4 с 35 вершинами.}
-	\end{figure}
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=300pt]{graph_size_27_5.png}
-		\caption{Граф 5 с 35 вершинами.}
-	\end{figure} 
-
 	\vfill
 	\clearpage
 
 	\section*{Выводы}
 	\addcontentsline{toc}{section}{Выводы}
-
+	В ходе лабораторной работы я познакомился с алгоритмом Флойда-Уоршелла, который предназначен для получения кратчайших путей между всеми парами вершин, существующих в графе. \par
+	Из графика оказалось видно, что время выполнения увеличивается согласно ассимптотической сложности алгоритма, т.е. \( N^3 \) с увеличением количества вершин в графе. \par
+	Поэтому он довольно эффективен для графов с небольшим количеством вершин.
 \end{document}
