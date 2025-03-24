@@ -6,25 +6,31 @@
 #include "../include/Constants.h"
 
 int main() {
-	GraphGenerator generator(Constants::minVertices, Constants::maxVertices, Constants::minEdges, Constants::maxEdges);
+	double executionTimes[Constants::nTests] = {0};
 
-	Graph graph = generator.generate();
+	for (int sizeIndex = 0; sizeIndex < 3; sizeIndex++) {
 
-	std::cout << "Adjacency matrix:" << std::endl;
-	graph.printAdjacencyMatrix();
+		GraphGenerator generator(Constants::minVertices[sizeIndex], Constants::maxVertices[sizeIndex], Constants::minEdges[sizeIndex], Constants::minEdges[sizeIndex]);
+		for (int graphIndex = 0; graphIndex < Constants::nGraphs; graphIndex++) {
 
-	for (int i = 1; i <= Constants::nGraphs; i++) {
-		std::stringstream dotFilename;
-		dotFilename << Constants::graphNdot << i << ".dot";
-		graph.generateDotFile(dotFilename.str());
+			Graph graph = generator.generate(sizeIndex);
 
-		std::stringstream pngFilename;
-		pngFilename << Constants::graphNpng << i << ".png";
-		std::string command = "dot -Tpng " + dotFilename.str() + " -o " + pngFilename.str();
-		system(command.c_str());
+			std::cout << "Graph " << graphIndex << " with " << Constants::minVertices[sizeIndex] << " vertices:" << std::endl;
+			std::cout << "Adjacency matrix:" << std::endl;
+			graph.printAdjacencyMatrix();
 
-		std::cout << std::endl << "Test " << i << ":" << std::endl;
-		graph.floydWarshall();
+            std::stringstream dotFilename;
+            dotFilename << Constants::graphNdot << "size_" << Constants::minVertices[sizeIndex] << "_graph_" << graphIndex + 1 << ".dot";
+            graph.generateDotFile(dotFilename.str());
+
+            std::stringstream pngFilename;
+            pngFilename << Constants::graphNpng << "size_" << Constants::minVertices[sizeIndex] << "_graph_" << graphIndex + 1 << ".png";
+            std::string command = "dot -Tpng " + dotFilename.str() + " -o " + pngFilename.str();
+			system(command.c_str());
+
+			std::cout << std::endl << "Test " << graphIndex << ":" << std::endl;
+			graph.floydWarshall();
+		}
 	}
 
 	return 0;
