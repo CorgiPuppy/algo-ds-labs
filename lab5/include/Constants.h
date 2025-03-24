@@ -2,14 +2,15 @@
 #define CONSTANTS_H
 
 namespace Constants {
-	int maxWeight = 5;
-	int minVertices = 5;
-	int maxVertices = 9;
-	int minEdges = 5;
-	int maxEdges = 9;
+	int maxWeight = 20;
 
+	int minVertices[4] = { 10, 20, 50, 100 };
+	int maxVertices[4] = { 10, 20, 50, 100 };
+
+	int minEdges[4] = { 3, 4, 10, 20 } ;
+
+	int nTests = 4;
     int nGraphs = 5;
-    int printNelements = 5;
 
     std::string graphNdot = "assets/files/graph_";
 	std::string graphNpng = "assets/pictures/graph_";
