@@ -4,8 +4,8 @@
 namespace Constants {
 	int maxWeight = 20;
 
-	int minVertices[4] = { 10, 20, 27, 35 };
-	int maxVertices[4] = { 10, 20, 27, 35 };
+	int minVertices[4] = { 10, 18, 27, 35 };
+	int maxVertices[4] = { 10, 18, 27, 35 };
 
 	int minEdges[4] = { 3, 4, 10, 20 } ;
 
