@@ -110,7 +110,7 @@ class Graph {
 			for (int k = 1; k <= nVertices; k++)
 				for (int i = 1; i <= nVertices; i++)
 					for (int j = 1; j <= nVertices; j++)
-						if (dist[i][k] != INT_MAX && dist[k][j] != INT_MAX && dist[i][k] > dist[i][j] + dist[k][j])
+						if (dist[i][k] != INT_MAX && dist[k][j] != INT_MAX && dist[i][j] > dist[i][k] + dist[k][j])
 							dist[i][j] = dist[i][k] + dist[k][j];
 
 			std::cout << "Матрица кратчайших расстояний:" << std::endl;
@@ -149,7 +149,7 @@ class Graph {
 				Node* current = edges[i];
 				while (current) {
 					if (i <= current->vertex)
-						dotFile << " " << i << " -- " << current->vertex << ";\n";
+						dotFile << " " << i << " -- " << current->vertex << " [label=\"" << current->weight << "\"];\n";
 					current = current->next;
 				}
 			}
