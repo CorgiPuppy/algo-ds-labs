@@ -37,6 +37,42 @@ class BinarySearchTree {
 			inOrderTraversal(node->right);
 		}
 
+		TreeNode<T>* deleteNode(TreeNode<T>* node, const T &value) {
+			if (!node) return node;
+
+			if (value < node->data)
+				node->left = deleteNode(node->left, value);
+			else if (value > node->data)
+				node->right = deleteNode(node->right, value);
+			else {
+				if (!node->left) {
+					TreeNode<T>* temp = node->right;
+					delete node;
+					size--;
+					return temp;
+				} else if (!node->right) {
+					TreeNode<T>* temp = node->left;
+					delete node;
+					size--;
+					return temp;
+				}
+
+				TreeNode<T>* temp = minValueNode(node->right);
+				node->data = temp->data;
+				node->right = deleteNode(node->right, temp->data);
+			}
+
+			return node;
+	}
+
+	TreeNode<T>* minValueNode(TreeNode<T>* node) {
+		TreeNode<T>* current = node;
+		while (current && current->left)
+			current = current->left;
+		return current;
+	}
+
+	void deleteNode(const T &value) { root = deleteNode(root, value); }
 	public:
 		BinarySearchTree() : root(nullptr), size(0) {}
 
