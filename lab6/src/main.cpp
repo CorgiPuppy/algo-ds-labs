@@ -31,6 +31,9 @@ int main() {
 			SearchResult avlSearch = dataList.measureSearchTime(avl);
 
 			std::cout << "AVL: Insert=" << avlInsertTime << "mks, " << "Search=" << avlSearch.totalTime << "mks total (" << avlSearch.averageTime << "mks per search)" << std::endl;
+
+			SearchResult listSearch = dataList.measureListSearchTime<int>();
+			std::cout << "List Search: " << listSearch.totalTime << "mks total (" << listSearch.averageTime << "mks per search)" << std::endl;
 		}
 
 		for (int loop = Constants::amount_of_loops / 2; loop < Constants::amount_of_loops; loop++) {
@@ -50,6 +53,9 @@ int main() {
 			SearchResult avlSearch = dataList.measureSearchTime(avl);
 
 			std::cout << "AVL: Insert=" << avlInsertTime << "mks, " << "Search=" << avlSearch.totalTime << "mks total (" << avlSearch.averageTime << "mks per search)" << std::endl;
+
+			SearchResult listSearch = dataList.measureListSearchTime<int>();
+			std::cout << "List Search: " << listSearch.totalTime << "mks total (" << listSearch.averageTime << "mks per search)" << std::endl;
 		}
 	}
 
