@@ -162,6 +162,38 @@ class DoublyLinkedList : public LinkedList<T> {
 			return result;
 		}
 
+		template <typename TreeType>
+		SearchResult measureDeleteTime(TreeType& tree, int operations = Constants::amount_of_operations) {
+			SearchResult result;
+			if (this->isEmpty()) return result;
+
+			DoublyLinkedList<T> deleteKeys;
+			std::random_device engine;
+			std::mt19937 gen(engine());
+			std::uniform_int_distribution<int> dist(0, this->getSize() - 1);
+
+			auto it = this->begin();
+			for (int i = 0; i < operations; i++) {
+				int index = dist(gen);
+				auto temp = it;
+				for (int j = 0; j < index && temp != this->end(); j++)
+					++temp;
+				if (temp != this->end())
+					deleteKeys.insertEnd(*temp);
+			}
+
+			auto start = std::chrono::high_resolution_clock::now();
+			for (auto key : deleteKeys) {
+				tree.search(key);
+			}
+			auto end = std::chrono::high_resolution_clock::now();
+
+			result.totalTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+			result.averageTime = static_cast<double>(result.totalTime) / operations;
+
+			return result;
+		}
+
 		void clear() {
 			while (this->head != nullptr) {
 				Node<T>* temp = this->head;
