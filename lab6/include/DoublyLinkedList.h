@@ -92,10 +92,10 @@ class DoublyLinkedList : public LinkedList<T> {
 
 		template <typename TreeType>
 		long long measureInsertTime(TreeType& tree) {
-			auto start = std::chrono::high_resolution::now();
+			auto start = std::chrono::high_resolution_clock::now();
 			for (auto it = this->begin(); it != this->end(); ++it)
 				tree.insert(*it);
-			auto end = std::chrono::high_resolution::now();
+			auto end = std::chrono::high_resolution_clock::now();
 			return std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 		}
 
