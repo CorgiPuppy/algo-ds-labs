@@ -30,11 +30,11 @@ class BinarySearchTree {
 			return (value < node->data) ? searchNode(node->left, value) : searchNode(node->right, value);
 		}
 
-		void printTree(TreeNode<T>* node) const {
+		void inOrderTraversal(TreeNode<T>* node) const {
 			if (!node) return;
-			printTree(node->left);
+			inOrderTraversal(node->left);
 			std::cout << node->data << " ";
-			printTree(node->right);
+			inOrderTraversal(node->right);
 		}
 
 	public:
@@ -42,7 +42,7 @@ class BinarySearchTree {
 
 		void insert(const T &value) { root = insertNode(root, value); }
 		bool search(const T &value) const { return searchNode(root, value); }
-		void print() const { printTree(root); std::cout << "\n"; }
+		void inOrder() const { inOrderTraversal(root); std::cout << "\n"; }
 		int getSize() const { return size; }
 };
 
