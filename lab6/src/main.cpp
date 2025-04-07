@@ -22,15 +22,17 @@ int main() {
 			BinarySearchTree<int> bst;
 			long long bstInsertTime = dataList.measureInsertTime(bst);
 			SearchResult bstSearch = dataList.measureSearchTime(bst);
+			SearchResult bstDelete = dataList.measureDeleteTime(bst);
 
-			std::cout << "BST: Insert=" << bstInsertTime << "mks, " << "Search=" << bstSearch.totalTime << "mks total (" << bstSearch.averageTime << "mks per search)" << std::endl;
+			std::cout << "BST: Insert=" << bstInsertTime << "mks, " << "Search=" << bstSearch.totalTime << "mks total (" << bstSearch.averageTime << "mks per search), " << "Delete=" << bstDelete.totalTime << "mks (" << bstDelete.averageTime << "mks/delete)" << std::endl;
 
 
 			AVLTree<int> avl;
 			long long avlInsertTime = dataList.measureInsertTime(avl);
 			SearchResult avlSearch = dataList.measureSearchTime(avl);
+			SearchResult avlDelete = dataList.measureDeleteTime(avl);
 
-			std::cout << "AVL: Insert=" << avlInsertTime << "mks, " << "Search=" << avlSearch.totalTime << "mks total (" << avlSearch.averageTime << "mks per search)" << std::endl;
+			std::cout << "AVL: Insert=" << avlInsertTime << "mks, " << "Search=" << avlSearch.totalTime << "mks total (" << avlSearch.averageTime << "mks per search), " << "Delete=" << avlDelete.totalTime << "mks (" << avlDelete.averageTime << "mks/delete)" << std::endl;
 
 			SearchResult listSearch = dataList.measureListSearchTime<int>();
 			std::cout << "List Search: " << listSearch.totalTime << "mks total (" << listSearch.averageTime << "mks per search)" << std::endl;
@@ -44,15 +46,16 @@ int main() {
 			BinarySearchTree<int> bst;
 			long long bstInsertTime = dataList.measureInsertTime(bst);
 			SearchResult bstSearch = dataList.measureSearchTime(bst);
+			SearchResult bstDelete = dataList.measureDeleteTime(bst);
 
-			std::cout << "BST: Insert=" << bstInsertTime << "mks, " << "Search=" << bstSearch.totalTime << "mks total (" << bstSearch.averageTime << "mks per search)" << std::endl;
-
+			std::cout << "BST: Insert=" << bstInsertTime << "mks, " << "Search=" << bstSearch.totalTime << "mks total (" << bstSearch.averageTime << "mks per search), " << "Delete=" << bstDelete.totalTime << "mks (" << bstDelete.averageTime << "mks/delete)" << std::endl;
 
 			AVLTree<int> avl;
 			long long avlInsertTime = dataList.measureInsertTime(avl);
 			SearchResult avlSearch = dataList.measureSearchTime(avl);
+			SearchResult avlDelete = dataList.measureDeleteTime(avl);
 
-			std::cout << "AVL: Insert=" << avlInsertTime << "mks, " << "Search=" << avlSearch.totalTime << "mks total (" << avlSearch.averageTime << "mks per search)" << std::endl;
+			std::cout << "AVL: Insert=" << avlInsertTime << "mks, " << "Search=" << avlSearch.totalTime << "mks total (" << avlSearch.averageTime << "mks per search), " << "Delete=" << avlDelete.totalTime << "mks (" << avlDelete.averageTime << "mks/delete)" << std::endl;
 
 			SearchResult listSearch = dataList.measureListSearchTime<int>();
 			std::cout << "List Search: " << listSearch.totalTime << "mks total (" << listSearch.averageTime << "mks per search)" << std::endl;
