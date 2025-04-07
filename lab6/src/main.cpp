@@ -10,8 +10,10 @@
 
 std::vector<int> generateRandomData(int);
 std::vector<int> generateSortedData(int);
-void testBST(const std::vector<int>&);
-void testAVL(const std::vector<int>&);
+void testBST(const std::vector<int>&, bool);
+void testAVL(const std::vector<int>&, bool);
+void runSearchTest(BinarySearchTree<int>&, const std::vector<int>&);
+void runSearchTest(AVLTree<int>&, const std::vector<int>&);
 
 int main() {
 	for (int episode = 0; episode < Constants::amount_of_series; episode++) {
@@ -19,10 +21,17 @@ int main() {
 		std::cout << "n=== Episode " << episode + 1 << " (n = " << n << ") ===" << std::endl;
 
 		for (int loop = 0; loop < Constants::amount_of_loops / 2; loop++) {
-			std::cout << "Loop " << loop + 1 << " (random): ";
+			std::cout << "Loop " << loop + 1 << " (random data):" << std::endl;
 			std::vector<int> data = generateRandomData(n);
-			testBST(data);
-			testAVL(data);
+			testBST(data, true);
+			testAVL(data, true);
+		}
+
+		for (int loop = Constants::amount_of_loops / 2; loop < Constants::amount_of_loops; loop++) {
+			std::cout << std::endl << "Loop " << loop + 1 << " (sorted data): " << std::endl;
+			std::vector<int> data = generateRandomData(n);
+			testBST(data, true);
+			testAVL(data, true);
 		}
 	}
 
@@ -51,26 +60,70 @@ std::vector<int> generateSortedData(int n) {
 	return data;
 }
 
-void testBST(const std::vector<int>& data) {
+void testBST(const std::vector<int>& data, bool testSearch) {
 	BinarySearchTree<int> tree;
 
-	auto start = std::chrono::high_resolution_clock::now();
+	auto insertStart = std::chrono::high_resolution_clock::now();
 	for (int val : data)
 		tree.insert(val);
-	auto end = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	auto insertEnd = std::chrono::high_resolution_clock::now();
+	auto insertTime = std::chrono::duration_cast<std::chrono::microseconds>(insertEnd - insertStart);
 	
-	std::cout << "BST: " << duration.count() << "mks (size: " << tree.getSize() << ")" << std::endl;
+	std::cout << "BST: " << insertTime.count() << "mks (size: " << tree.getSize() << ")" << std::endl;
+
+	if (testSearch)
+		runSearchTest(tree, data);
 }
 
-void testAVL(const std::vector<int>& data) {
+void testAVL(const std::vector<int>& data, bool testSearch) {
 	AVLTree<int> tree;
 
-	auto start = std::chrono::high_resolution_clock::now();
+	auto insertStart = std::chrono::high_resolution_clock::now();
 	for (int val : data)
 		tree.insert(val);
-	auto end = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	auto insertEnd = std::chrono::high_resolution_clock::now();
+	auto insertTime = std::chrono::duration_cast<std::chrono::microseconds>(insertEnd - insertStart);
 	
-	std::cout << "AVL: " << duration.count() << "mks (size: " << tree.getSize() << ")" << std::endl;
+	std::cout << "AVL: " << insertTime.count() << "mks (size: " << tree.getSize() << ")" << std::endl;
+
+	if (testSearch)
+		runSearchTest(tree, data);
+}
+
+void runSearchTest(BinarySearchTree<int>& tree, const std::vector<int>& data) {
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dist(0, data.size() - 1);
+
+	std::vector<int> searchKeys;
+	for (int i = 0; i < Constants::amount_of_operations; i++)
+		searchKeys.push_back(data[dist(gen)]);
+
+	auto searchStart = std::chrono::high_resolution_clock::now();
+	for (int key : searchKeys)
+		tree.search(key);
+	auto searchEnd = std::chrono::high_resolution_clock::now();
+	auto totalSearchTime = std::chrono::duration_cast<std::chrono::microseconds>(searchEnd - searchStart);
+	double averageSearchTime = totalSearchTime.count() / 1000.0;
+
+	std::cout << "BST Search: " << totalSearchTime.count() << "mks total, " << averageSearchTime << " mks per search" << std::endl;
+}
+
+void runSearchTest(AVLTree<int>& tree, const std::vector<int>& data) {
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dist(0, data.size() - 1);
+
+	std::vector<int> searchKeys;
+	for (int i = 0; i < Constants::amount_of_operations; i++)
+		searchKeys.push_back(data[dist(gen)]);
+
+	auto searchStart = std::chrono::high_resolution_clock::now();
+	for (int key : searchKeys)
+		tree.search(key);
+	auto searchEnd = std::chrono::high_resolution_clock::now();
+	auto totalSearchTime = std::chrono::duration_cast<std::chrono::microseconds>(searchEnd - searchStart);
+	double averageSearchTime = totalSearchTime.count() / 1000.0;
+
+	std::cout << "AVL Search: " << totalSearchTime.count() << "mks total, " << averageSearchTime << " mks per search" << std::endl;
 }
