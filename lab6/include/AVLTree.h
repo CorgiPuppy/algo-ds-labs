@@ -68,7 +68,8 @@ class AVLTree : public BinarySearchTree<T> {
 			if (balance > 1 && value > node->left->data) {
 				node->left = rotateLeft(node->left);
 				return rotateRight(node);
-			
+			}
+
 			if (balance < -1 && value < node->right->data) {
 				node->right = rotateRight(node->right);
 				return rotateLeft(node);
