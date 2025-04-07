@@ -11,7 +11,7 @@ class BinarySearchTree {
 		TreeNode<T>* root;
 		int size;
 
-		TreeNode<T> insertNode(TreeNode<T>* node, const T &value) {
+		TreeNode<T>* insertNode(TreeNode<T>* node, const T &value) {
 			if (!node) {
 				size++;
 				return new TreeNode<T>(value);
