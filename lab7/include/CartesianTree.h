@@ -3,6 +3,7 @@
 
 #include <random>
 #include <chrono>
+#include <vector>
 
 #include "Constants.h"
 #include "TreeNode.h"
@@ -104,6 +105,20 @@ class Treap {
 		
 		int getMaxDepth() const { return getMaxDepth(root); }
 
+		void collectDepths(TreeNode<T>* node, std::vector<int>&depth, int currentDepth) const {
+			if (!node) {
+				depths.push_back(currentDepth);
+				return;
+			}
+			collectDepths(node->left, depths, currentDepth + 1);
+			collectDepths(node->right, depths, currentDepth + 1);
+		}
+
+		std::vector<int> getAllDepths() const {
+			std::vector<int> depths;
+			collectDepths(root, depths, 0);
+			return depths;
+		}
 };
 
 #endif
