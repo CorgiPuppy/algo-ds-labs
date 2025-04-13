@@ -13,9 +13,20 @@
 #include "../include/SearchResult.h"
 
 void writeDepthsToFile(const std::string& filename, const std::vector<int>& depths) {
-    std::ofstream file(filename);
+    if (depths.empty()) return;
+    
+    int min_depth = *std::min_element(depths.begin(), depths.end());
+    int max_depth = *std::max_element(depths.begin(), depths.end());
+    
+    std::vector<int> frequency(max_depth - min_depth + 1, 0);
+    
     for (int depth : depths) {
-        file << depth << "\n";
+        frequency[depth - min_depth]++;
+    }
+    
+    std::ofstream file(filename);
+    for (size_t i = 0; i < frequency.size(); ++i) {
+        file << (min_depth + i) << " " << frequency[i] << "\n";
     }
     file.close();
 }
@@ -191,6 +202,12 @@ int main() {
         maxDepthFile << n << " " << cartesianTreeMaxDepth << " " << avlMaxDepth << " " << rbMaxDepth << "\n";
 
         if (episode == Constants::amount_of_series - 1) {
+			std::vector<int> max_heights;
+			max_heights.push_back(avlMaxDepth);
+			max_heights.push_back(cartesianTreeMaxDepth);
+
+			writeDepthsToFile(Constants::dataFilePath + "max_heights.dat", max_heights);
+
             writeDepthsToFile(Constants::dataFilePath + "avl_depths.dat", avlDepths);
             writeDepthsToFile(Constants::dataFilePath + "cartesianTree_depths.dat", cartesianTreeDepths);
             writeDepthsToFile(Constants::dataFilePath + "rb_depths.dat", rbDepths);
