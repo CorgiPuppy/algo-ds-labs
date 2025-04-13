@@ -7,5 +7,5 @@ set style data histogram
 set style fill solid
 set boxwidth 0.9
 
-set output "plots/max_height_distribution.png"
+set output "plots/pictures/max_height_distribution.png"
 plot "plots/dat-files/max_heights.dat" using 1 with boxes title "AVL vs Декартово"
