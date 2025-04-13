@@ -4,8 +4,8 @@
 #include <string>
 
 namespace Constants {
-	const int amount_of_series = 6;
-	const int amount_of_loops = 20;
+	const int amount_of_series = 5;
+	const int amount_of_loops = 50;
 	const int amount_of_operations = 1000;
 
 	const int minValue = 1;
