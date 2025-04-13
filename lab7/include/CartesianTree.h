@@ -10,13 +10,13 @@
 #include "SearchResult.h"
 
 template <typename T>
-class Treap {
+class CartesianTree {
 	private:
 		TreeNode<T>* root;
 		int size;
 
 		std::mt19937 gen;
-		std::uniform_int_discribution<int>dist;
+		std::uniform_int_distribution<int>dist;
 
 		TreeNode<T>* merge(TreeNode<T>* left, TreeNode<T>* right) {
 			if (!left) return right;
@@ -105,7 +105,7 @@ class Treap {
 		
 		int getMaxDepth() const { return getMaxDepth(root); }
 
-		void collectDepths(TreeNode<T>* node, std::vector<int>&depth, int currentDepth) const {
+		void collectDepths(TreeNode<T>* node, std::vector<int>& depths, int currentDepth) const {
 			if (!node) {
 				depths.push_back(currentDepth);
 				return;
