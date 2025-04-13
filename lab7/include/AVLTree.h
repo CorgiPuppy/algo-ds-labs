@@ -2,6 +2,7 @@
 #define AVL_TREE_H
 
 #include <algorithm>
+#include <vector>
 
 #include "BinarySearchTree.h"
 
@@ -131,10 +132,38 @@ class AVLTree : public BinarySearchTree<T> {
 			this->root = deleteNode(this->root, value);
 		}
 
+		int getHeight(TreeNode<T>* node) const {
+			return node ? node->height : 0;
+		}
+		
+		int getMaxDepthHelper(TreeNode<T>* node) const {
+		 	if (!node) return 0;
+			return 1 + std::max(getMaxDepthHelper(node->left), getMaxDepthHelper(node->right));
+		}
+
+		void collectDepthsHelper(TreeNode<T>* node, std::vector<int>& depths, int currentDepth) const {
+			if (!node) {
+				depths.push_back(currentDepth);
+				return;
+			}
+			collectDepthsHelper(node->left, depths, currentDepth + 1);
+			collectDepthsHelper(node->right, depths, currentDepth + 1);
+		}
+
 	public:
 		AVLTree() : BinarySearchTree<T>() {}
 
 		void insert(const T &value) { this->root = insertNode(this->root, value); }
+
+		int getMaxDepth() const {
+			return getMaxDepthHelper(this->root);
+		}
+
+		std::vector<int> getAllDepths() const {
+			std::vector<int> depths;
+			collectDepthsHelper(this->root, depths, 0);
+			return depths;
+		}
 };
 
 #endif
