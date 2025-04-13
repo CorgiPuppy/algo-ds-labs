@@ -22,7 +22,7 @@ int main() {
 	std::ofstream deleteSortedFile;
 	deleteSortedFile.open(Constants::dataFilePath + "delete_sorted.dat");
 
-	for (int episode = 0; episode < Constants::amount_of_series - 4; episode++) {
+	for (int episode = 0; episode < Constants::amount_of_series; episode++) {
 		int n = pow(2, 10 + episode);
 		std::cout << "n=== Episode " << episode + 1 << " (n = " << n << ") ===" << std::endl;
 
