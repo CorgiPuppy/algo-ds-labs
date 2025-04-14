@@ -9,13 +9,15 @@ class TreeNode {
 		T data;
 		TreeNode<T>* left;
 		TreeNode<T>* right;
-		TreeNode<T>* parent;
-
-		Color color;
 
 		int height;
-		
-		TreeNode(const T &value) : data(value), left(nullptr), right(nullptr), parent(nullptr), color(RED), height(1) {}
+
+		int priority;
+
+		TreeNode<T>* parent;
+		Color color;
+	
+		TreeNode(const T &value, int prio = 0) : data(value), left(nullptr), right(nullptr), height(1), priority(prio), parent(nullptr), color(RED) {}
 };
 
 #endif

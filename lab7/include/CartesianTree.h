@@ -19,10 +19,10 @@ class CartesianTree {
 		std::uniform_int_distribution<int>dist;
 
 		TreeNode<T>* merge(TreeNode<T>* left, TreeNode<T>* right) {
-			if (!left) return right;
-			if (!right) return left;
+			if (!left || !right) 
+				return left ? left : right;
 
-			if (left->height > right->height) {
+			if (left->priority > right->priority) {
 				left->right = merge(left->right, right);
 				return left;
 			} else {
@@ -31,20 +31,66 @@ class CartesianTree {
 			}
 		}
 
-		void split(TreeNode<T>* node, T key, TreeNode<T>*& left, TreeNode<T>*& right) {
-			if (!node) {
+		void split(TreeNode<T>* current, T key, TreeNode<T>*& left, TreeNode<T>*& right) {
+			if (!current) {
 				left = nullptr;
 				right = nullptr;
-				return;
+			} else if (current->data <= key) {
+				split(current->right, key, current->right, right);
+				left = current;
+			} else {
+				split(current->left, key, left, current->left);
+				right = current;
+			}
+		}
+
+		TreeNode<T>* insertNode(TreeNode<T>* node, const T& value, int priority) {
+			if (!node) {
+				size++;
+				return new TreeNode<T>(value, priority);
 			}
 
-			if (node->data <= key) {
-				split(node->right, key, node->right, right);
-				left = node;
-			} else {
-				split(node->left, key, left, node->left);
-				right = node;
+			if (priority > node->priority) {
+				TreeNode<T>* left = nullptr;
+				TreeNode<T>* right = nullptr;
+				split(node, value, left, right);
+
+				TreeNode<T>* newNode = new TreeNode<T>(value, priority);
+				newNode->left = left;
+				newNode->right = right;
+				return newNode;
 			}
+
+			if (value == node->data)
+				node->left = insertNode(node->left, value, priority);
+			else
+				node->right = insertNode(node->right, value, priority);
+			
+			return node;
+		}
+
+		bool searchNode(TreeNode<T>* node, const T& value) const {
+			if (!node) return false;
+			if (value == node->data) return true;
+			return (value < node->data) ? searchNode(node->left, value) : searchNode(node->right, value);
+		}
+
+		TreeNode<T>* deleteNode(TreeNode<T>* node, const T& value) {
+			if (!node) return nullptr;
+
+			if (value == node->data) {
+				TreeNode<T>* merged = merge(node->left, node->right);
+				delete node;
+				size--;
+				return merged;
+			}
+
+			if (value < node->data)
+				node->left = deleteNode(node->left, value);
+			else
+				node->right = deleteNode(node->right, value);
+
+			return node;
 		}
 
 		int getHeight(TreeNode<T>* node) const {
@@ -60,45 +106,19 @@ class CartesianTree {
 		CartesianTree() : root(nullptr), size(0), gen(std::random_device{}()), dist(Constants::minValue, Constants::maxValue) {}
 
 		void insert(const T& value) {
-			TreeNode<T>* left;
-			TreeNode<T>* right;
-
-			split(root, value, left, right);
-
-			TreeNode<T>* newNode = new TreeNode<T>(value);
-			newNode->height = dist(gen);
-
-			root = merge(merge(left, newNode), right);
-			size++;
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_int_distribution<int> dist(Constants::minValue, Constants::maxValue);
+			int priority = dist(gen);
+			root = insertNode(root, value, priority);
 		}
 
 		bool search(const T& value) const {
-			TreeNode<T>* current = root;
-			while (current) {
-				if (current->data == value)
-					return true;
-				else if (value < current->data)
-					current = current->left;
-				else
-					current = current->right;
-			}
-			return false;
+			return searchNode(root, value);
 		}
 
 		void remove(const T& value) {
-			TreeNode<T>* left;
-			TreeNode<T>* mid;
-			TreeNode<T>* right;
-
-			split(root, value - 1, left, right);
-			split(right, value, mid, right);
-
-			if (mid && mid->data == value) {
-				delete mid;
-				size--;
-			}
-
-			root = merge(left, right);
+			root = deleteNode(root, value);
 		}
 
 		int getSize() const { return size; }
