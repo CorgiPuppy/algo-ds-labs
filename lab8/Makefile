@@ -6,7 +6,7 @@ REPORT_DIR := report
 GROUP_ID := com.heaps
 ARTIFACT_ID := lab8
 JAR_FILE := $(ARTIFACT_ID)-1.0-SNAPSHOT.jar
-CLASS_NAME := $(GROUP_ID).App
+CLASS_NAME := $(GROUP_ID).Main
 
 RPRT := $(REPORT_DIR)/report.pdf
 EXE := $(TARGET_DIR)/$(JAR_FILE)
@@ -28,11 +28,11 @@ all: clean-report run-src compile-gnp run-report clean-aux clean-target
 
 run-src: $(EXE)
 	@echo "Running.."
-	$(JV) $(JVFLAGS) $< $(CLASS_NAME)
+	@$(JV) $(JVFLAGS) $< $(CLASS_NAME)
 
 $(EXE):
 	@echo "Building binaries.."
-	@$(MVN) clean install
+	@$(MVN) install
 
 compile-gnp: $(GNP)
 	@echo "Compile gnuplot files.."
@@ -53,7 +53,7 @@ clean-aux:
 
 clean-target:
 	@echo "Cleaning the target dir.."
-	@$(RM) -rv $(TARGET_DIR)
+	$(MVN) clean
 
 clean-report:
 	@echo "Cleaning the report.."
