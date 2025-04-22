@@ -15,7 +15,10 @@ GNP := $(wildcard $(GNUPLOT_DIR)/*.p)
 
 JV := java
 JVFLAGS := -cp 
+PARAMETERS := -XX:+DisableExplicitGC
+MEMORY_SIZE := -Xmx1G
 MVN := mvn
+
 GNPLT := gnuplot
 ZTHR := zathura
 PDFLTX := pdflatex
@@ -28,7 +31,7 @@ all: clean-report run-src compile-gnp run-report clean-aux clean-target
 
 run-src: $(EXE)
 	@echo "Running.."
-	@$(JV) $(JVFLAGS) $< $(CLASS_NAME)
+	@$(JV) $(PARAMETERS) $(MEMORY_SIZE) $(JVFLAGS) $< $(CLASS_NAME)
 
 $(EXE):
 	@echo "Building binaries.."
@@ -53,7 +56,7 @@ clean-aux:
 
 clean-target:
 	@echo "Cleaning the target dir.."
-	$(MVN) clean
+	@$(MVN) clean
 
 clean-report:
 	@echo "Cleaning the report.."
