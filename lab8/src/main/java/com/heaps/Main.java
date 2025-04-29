@@ -19,6 +19,16 @@ class Main {
 		File searchMaxDat = new File(folder + "search_max.dat");
 		PrintWriter searchMax = new PrintWriter(searchMaxDat);
 
+		File insertAverageDat = new File(folder + "insert_average.dat");
+		PrintWriter insertAverage = new PrintWriter(insertAverageDat);
+		File insertMaxDat = new File(folder + "insert_max.dat");
+		PrintWriter insertMax = new PrintWriter(insertMaxDat);
+
+		File deleteAverageDat = new File(folder + "delete_average.dat");
+		PrintWriter deleteAverage = new PrintWriter(deleteAverageDat);
+		File deleteMaxDat = new File(folder + "delete_max.dat");
+		PrintWriter deleteMax = new PrintWriter(deleteMaxDat);
+
 		for (int i = 3; i <= 7; i++) {
 			int initialCapacity = 1;
 			BinaryHeap heap = new BinaryHeap(initialCapacity);
@@ -31,7 +41,7 @@ class Main {
 			for(int j = 0; j < N; j++)
 				heap.insert(Math.random());
 
-			int Noperations = 10000;
+			int Noperations = 1000;
 
 			double temp;
 			
@@ -52,9 +62,54 @@ class Main {
 			elapsedTime += (end - start);
 			double averageElapsedTime = elapsedTime / Noperations / 1E9;
 			maxTime /= 1E9;
-	
+
 			searchAverage.print(averageElapsedTime + " ");
 			searchMax.print(maxTime + " ");
+
+			insertAverage.print(N + " ");
+			insertMax.print(N + " ");
+
+			elapsedTime = 0.0;
+			maxTime = 0.0;
+			currentTime = 0.0;
+			start = System.nanoTime();
+			for (int j = 0; j < Noperations; j++) {
+				double operationStart = System.nanoTime();
+				heap.insert(Math.random());
+				double operationEnd = System.nanoTime();
+				currentTime = (operationEnd - operationStart);
+				maxTime = (currentTime > maxTime) ? currentTime : maxTime;
+			}
+			end = System.nanoTime();
+			elapsedTime += (end - start);
+			averageElapsedTime = elapsedTime / Noperations / 1E9;
+			maxTime /= 1E9;
+	
+			insertAverage.print(averageElapsedTime + " ");
+			insertMax.print(maxTime + " ");
+
+			deleteAverage.print(N + " ");
+			deleteMax.print(N + " ");
+
+			elapsedTime = 0.0;
+			maxTime = 0.0;
+			currentTime = 0.0;
+			start = System.nanoTime();
+			for (int j = 0; j < Noperations; j++) {
+				double operationStart = System.nanoTime();
+				System.out.println(heap.extractMin());
+				double operationEnd = System.nanoTime();
+				currentTime = (operationEnd - operationStart);
+				maxTime = (currentTime > maxTime) ? currentTime : maxTime;
+			}
+			end = System.nanoTime();
+			elapsedTime += (end - start);
+			averageElapsedTime = elapsedTime / Noperations / 1E9;
+			maxTime /= 1E9;
+	
+			deleteAverage.print(averageElapsedTime + " ");
+			deleteMax.print(maxTime + " ");
+
 // 		start = System.nanoTime();
 // 		for (int j = 0; j < Noperations; j++)
 // 			System.out.println(heap.extractMin());
@@ -96,6 +151,44 @@ class Main {
 
 			searchAverage.println(averageElapsedTime);
 			searchMax.println(maxTime);
+
+			elapsedTime = 0.0;
+			maxTime = 0.0;
+			currentTime = 0.0;
+			start = System.nanoTime();
+			for (int j = 0; j < Noperations; j++) {
+				double operationStart = System.nanoTime();
+	 			binomialHeapNode = binomialHeap.insert(binomialHeapNode, Math.random());
+				double operationEnd = System.nanoTime();
+				currentTime = (operationEnd - operationStart);
+				maxTime = (currentTime > maxTime) ? currentTime : maxTime;
+			}
+			end = System.nanoTime();
+			elapsedTime += (end - start);
+			averageElapsedTime = elapsedTime / Noperations / 1E9;
+			maxTime /= 1E9;
+
+			insertAverage.println(averageElapsedTime);
+			insertMax.println(maxTime);
+
+			elapsedTime = 0.0;
+			maxTime = 0.0;
+			currentTime = 0.0;
+			start = System.nanoTime();
+			for (int j = 0; j < Noperations; j++) {
+				double operationStart = System.nanoTime();
+	 			binomialHeapNode = binomialHeap.extractMin(binomialHeapNode);
+				double operationEnd = System.nanoTime();
+				currentTime = (operationEnd - operationStart);
+				maxTime = (currentTime > maxTime) ? currentTime : maxTime;
+			}
+			end = System.nanoTime();
+			elapsedTime += (end - start);
+			averageElapsedTime = elapsedTime / Noperations / 1E9;
+			maxTime /= 1E9;
+
+			deleteAverage.println(averageElapsedTime);
+			deleteMax.println(maxTime);
 // 	
 // 		start = System.nanoTime();
 // 		for (int j = 0; j < Noperations; j++)
@@ -117,6 +210,12 @@ class Main {
 
 		searchAverage.close();
 		searchMax.close();
+
+		insertAverage.close();
+		insertMax.close();
+
+		deleteAverage.close();
+		deleteMax.close();
 	}
 
 
