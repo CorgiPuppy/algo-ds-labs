@@ -41,7 +41,7 @@ class Main {
 			for(int j = 0; j < N; j++)
 				heap.insert(Math.random());
 
-			int Noperations = 1000;
+			int Noperations = 100000;
 
 			double temp;
 			
