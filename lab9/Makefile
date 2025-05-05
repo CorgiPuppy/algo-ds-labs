@@ -3,7 +3,7 @@ TARGET_DIR := target
 GNUPLOT_DIR := plots/gnuplot-files
 REPORT_DIR := report
 
-GROUP_ID := com.heaps
+GROUP_ID := com.hash
 ARTIFACT_ID := lab9
 JAR_FILE := $(ARTIFACT_ID)-1.0-SNAPSHOT.jar
 CLASS_NAME := $(GROUP_ID).Main
