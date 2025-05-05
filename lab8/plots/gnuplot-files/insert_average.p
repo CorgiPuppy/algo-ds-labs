@@ -8,7 +8,7 @@ set logscale x 10
 set logscale y 10
 
 set output "plots/pictures/insert_average.png"
-plot "plots/dat-files/insert_average.dat" using 1:2 title "BinaryAvg" with linespoint, \
-     "plots/dat-files/insert_average.dat" using 1:3 title "BinomialAvg" with linespoint, \
-     "plots/dat-files/insert_max.dat" using 1:2 title "BinaryMax" with linespoint, \
-     "plots/dat-files/insert_max.dat" using 1:3 title "BinomialMax" with linespoint
+plot "plots/dat-files/insert_average.dat" using 1:2 title "BinaryAvg" with linespoints, \
+     "plots/dat-files/insert_average.dat" using 1:3 title "BinomialAvg" with linespoints, \
+     "plots/dat-files/insert_max.dat" using 1:2 title "BinaryMax" with linespoints, \
+     "plots/dat-files/insert_max.dat" using 1:3 title "BinomialMax" with linespoints

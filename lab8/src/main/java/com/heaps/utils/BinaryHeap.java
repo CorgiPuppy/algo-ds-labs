@@ -3,83 +3,70 @@ package com.heaps.utils;
 import java.util.Arrays;
 
 public class BinaryHeap {
-	public double heap[];
-	public int size;
-	public int capacity;
+    private double[] heap;
+    private int size;
+    private int capacity;
 
-	public BinaryHeap(int capacity) {
-		this.capacity = capacity;
-		this.heap = new double[capacity];
-		this.size = 0;
-	}
+    public BinaryHeap(int capacity) {
+        this.capacity = capacity;
+        this.heap = new double[capacity];
+        this.size = 0;
+    }
 
-	private void resize() {
-		capacity *= 2;
-		heap = Arrays.copyOf(heap, capacity);
-	}
+    private void resize() {
+        capacity *= 2;
+        heap = Arrays.copyOf(heap, capacity);
+    }
 
-	public double getMin() {
-		return heap[0];
-	}
+    public double getMin() {
+        if (size == 0) throw new IllegalStateException("Heap is empty");
+        return heap[0];
+    }
 
-	private int parent(int i) {
-		return (i - 1) / 2;
-	}
+    private int parent(int i) { return (i - 1) / 2; }
+    private int left(int i) { return 2 * i + 1; }
+    private int right(int i) { return 2 * i + 2; }
 
-	public void insert(double element) {
-		if (size >= capacity)
-			resize();
+    public void insert(double element) {
+        if (size >= capacity) resize();
 
-		heap[size] = element;
-		int currentIndex = size;
-		size++;
+        heap[size] = element;
+        int current = size;
+        size++;
 
-		while (currentIndex > 0 && heap[currentIndex] < heap[parent(currentIndex)]) {
-			double temp = heap[currentIndex];
-			heap[currentIndex] = heap[parent(currentIndex)];
-			heap[parent(currentIndex)] = temp;
+        while (current > 0 && heap[current] < heap[parent(current)]) {
+            swap(current, parent(current));
+            current = parent(current);
+        }
+    }
 
-			currentIndex = parent(currentIndex);
-		}
-	}
+    public double extractMin() {
+        if (size == 0) throw new IllegalStateException("Heap is empty");
 
-	private void heapifyDown(int i) {
-		int smallestIndex = i;
+        double min = heap[0];
+        heap[0] = heap[size - 1];
+        size--;
+        heapifyDown(0);
+        return min;
+    }
 
-		int left = 2 * i + 1;
-		int right = 2 * i + 2;
+    private void heapifyDown(int i) {
+        int smallest = i;
+        int l = left(i);
+        int r = right(i);
 
-		if (left < size && heap[left] < heap[smallestIndex])
-			smallestIndex = left;
+        if (l < size && heap[l] < heap[smallest]) smallest = l;
+        if (r < size && heap[r] < heap[smallest]) smallest = r;
 
-		if (right < size && heap[right] < heap[smallestIndex])
-			smallestIndex = right;
+        if (smallest != i) {
+            swap(i, smallest);
+            heapifyDown(smallest);
+        }
+    }
 
-		if (smallestIndex != i) {
-			double temp = heap[i];
-			heap[i] = heap[smallestIndex];
-			heap[smallestIndex] = temp;
-
-			heapifyDown(smallestIndex);
-		}
-	}
-
-	public double extractMin() {
-		if (size == 0)
-			throw new RuntimeException("Heap is empty!");
-
-		double min = heap[0];
-
-		heap[0] = heap[size - 1];
-		size--;
-		
-		heapifyDown(0);
-
-		return min;
-	}
-
-	public void printHeap() {
-		for (int i = 0; i < size; i++)
-			System.out.print(heap[i] + " ");
-	}
+    private void swap(int i, int j) {
+        double temp = heap[i];
+        heap[i] = heap[j];
+        heap[j] = temp;
+    }
 }
