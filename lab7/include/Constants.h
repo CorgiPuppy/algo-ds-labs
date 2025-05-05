@@ -4,7 +4,7 @@
 #include <string>
 
 namespace Constants {
-	const int amount_of_series = 7;
+	const int amount_of_series = 4;
 	const int amount_of_loops = 50;
 	const int amount_of_operations = 1000;
 

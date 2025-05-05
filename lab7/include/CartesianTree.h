@@ -5,17 +5,14 @@
 #include <chrono>
 #include <vector>
 #include <algorithm>
-
 #include "Constants.h"
 #include "TreeNode.h"
-#include "SearchResult.h"
 
 template <typename T>
 class CartesianTree {
 private:
     TreeNode<T>* root;
     int size;
-
     std::mt19937 gen;
     std::uniform_int_distribution<int> dist;
 
@@ -70,28 +67,32 @@ private:
         return node;
     }
 
-    int getMaxDepthHelper(TreeNode<T>* node) const {
-        if (!node) return 0;
-        return 1 + std::max(getMaxDepthHelper(node->left), 
-                          getMaxDepthHelper(node->right));
+    void collectLeafDepths(TreeNode<T>* node, std::vector<int>& depths, int currentDepth) const {
+        if (!node) return;
+        if (!node->left && !node->right) {
+            depths.push_back(currentDepth);
+            return;
+        }
+        collectLeafDepths(node->left, depths, currentDepth + 1);
+        collectLeafDepths(node->right, depths, currentDepth + 1);
     }
 
-    void collectDepthsHelper(TreeNode<T>* node, std::vector<int>& depths, int currentDepth) const {
+    void collectAllDepths(TreeNode<T>* node, std::vector<int>& depths, int currentDepth) const {
         if (!node) {
             depths.push_back(currentDepth);
             return;
         }
-        collectDepthsHelper(node->left, depths, currentDepth + 1);
-        collectDepthsHelper(node->right, depths, currentDepth + 1);
+        collectAllDepths(node->left, depths, currentDepth + 1);
+        collectAllDepths(node->right, depths, currentDepth + 1);
     }
 
 public:
-    CartesianTree() : root(nullptr), size(0), gen(std::random_device{}()), dist(Constants::minValue, Constants::maxValue) {}
+    CartesianTree() : root(nullptr), size(0), gen(std::random_device{}()), 
+                     dist(Constants::minValue, Constants::maxValue) {}
 
     void insert(const T& value) {
         int priority = dist(gen);
         root = insertNode(root, value, priority);
-        size++;
     }
 
     bool search(const T& value) const {
@@ -103,21 +104,31 @@ public:
         return false;
     }
 
-    void remove(const T& value) {
-        root = deleteNode(root, value);
-    }
-
     int getSize() const { return size; }
     
-    int getMaxDepth() const { return getMaxDepthHelper(root); }
+    int getMaxDepth() const { 
+        return getMaxDepthHelper(root); 
+    }
 
     std::vector<int> getAllDepths() const {
         std::vector<int> depths;
-        collectDepthsHelper(root, depths, 0);
+        collectAllDepths(root, depths, 0);
         return depths;
     }
 
+    std::vector<int> getLeafDepths() const {
+        std::vector<int> leafDepths;
+        collectLeafDepths(root, leafDepths, 0);
+        return leafDepths;
+    }
+
 private:
+    int getMaxDepthHelper(TreeNode<T>* node) const {
+        if (!node) return 0;
+        return 1 + std::max(getMaxDepthHelper(node->left), 
+                          getMaxDepthHelper(node->right));
+    }
+
     TreeNode<T>* deleteNode(TreeNode<T>* node, const T& value) {
         if (!node) return nullptr;
 

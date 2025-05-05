@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <map>
 
 #include "../include/Constants.h"
 #include "../include/DoublyLinkedList.h"
@@ -12,21 +13,27 @@
 #include "../include/RBTree.h"
 #include "../include/SearchResult.h"
 
-void writeDepthsToFile(const std::string& filename, const std::vector<int>& depths) {
+void writeDepthHistogram(const std::string& filename, const std::vector<int>& depths) {
     if (depths.empty()) return;
     
-    int min_depth = *std::min_element(depths.begin(), depths.end());
-    int max_depth = *std::max_element(depths.begin(), depths.end());
-    
-    std::vector<int> frequency(max_depth - min_depth + 1, 0);
-    
+    std::map<int, int> histogram;
     for (int depth : depths) {
-        frequency[depth - min_depth]++;
+        histogram[depth]++;
     }
     
     std::ofstream file(filename);
-    for (size_t i = 0; i < frequency.size(); ++i) {
-        file << (min_depth + i) << " " << frequency[i] << "\n";
+    for (const auto& [depth, count] : histogram) {
+        file << depth << " " << count << "\n";
+    }
+    file.close();
+}
+
+void writeDepthsToFile(const std::string& filename, const std::vector<int>& depths) {
+    if (depths.empty()) return;
+    
+    std::ofstream file(filename);
+    for (int depth : depths) {
+        file << depth << "\n";
     }
     file.close();
 }
@@ -38,180 +45,175 @@ int main() {
     std::ofstream insertSortedFile(Constants::dataFilePath + "insert_sorted.dat");
     std::ofstream searchSortedFile(Constants::dataFilePath + "search_sorted.dat");
     std::ofstream deleteSortedFile(Constants::dataFilePath + "delete_sorted.dat");
-    std::ofstream maxDepthFile(Constants::dataFilePath + "max_depth.dat");
-    std::ofstream avlDepthsFile(Constants::dataFilePath + "avl_depths.dat");
-    std::ofstream cartesianTreeDepthsFile(Constants::dataFilePath + "cartesianTree_depths.dat");
-    std::ofstream rbDepthsFile(Constants::dataFilePath + "rb_depths.dat");
+    
+    std::ofstream maxHeightRandomFile(Constants::dataFilePath + "max_height_random.dat");
+    std::ofstream maxHeightSortedFile(Constants::dataFilePath + "max_height_sorted.dat");
+    maxHeightRandomFile << "# N AVL Cartesian RB\n";
+    maxHeightSortedFile << "# N AVL Cartesian RB\n";
+
+    std::vector<int> avlMaxHeightsRandom, cartesianMaxHeightsRandom, rbMaxHeightsRandom;
+    std::vector<int> avlDepthsRandom, cartesianDepthsRandom, rbDepthsRandom;
+    std::vector<int> avlMaxHeightsSorted, cartesianMaxHeightsSorted, rbMaxHeightsSorted;
+    std::vector<int> avlDepthsSorted, cartesianDepthsSorted, rbDepthsSorted;
 
     for (int episode = 0; episode < Constants::amount_of_series; episode++) {
         int n = pow(2, 10 + episode);
         std::cout << "=== Episode " << episode + 1 << " (n = " << n << ") ===" << std::endl;
 
         DoublyLinkedList<int> dataList;
-        std::vector<int> avlDepths, cartesianTreeDepths, rbDepths;
-        double avlMaxDepth = 0, cartesianTreeMaxDepth = 0, rbMaxDepth = 0;
+        
+        double avgCartesianTreeInsertTimeRandom = 0, avgAvlInsertTimeRandom = 0, avgRbInsertTimeRandom = 0;
+        double avgCartesianTreeSearchTimeRandom = 0, avgAvlSearchTimeRandom = 0, avgRbSearchTimeRandom = 0;
+        double avgCartesianTreeDeleteTimeRandom = 0, avgAvlDeleteTimeRandom = 0, avgRbDeleteTimeRandom = 0;
+        int avlMaxDepthRandom = 0, cartesianMaxDepthRandom = 0, rbMaxDepthRandom = 0;
 
-        double avgCartesianTreeInsertTime = 0, avgAvlInsertTime = 0, avgRbInsertTime = 0;
-        double avgCartesianTreeSearchTime = 0, avgAvlSearchTime = 0, avgRbSearchTime = 0;
-        double avgCartesianTreeDeleteTime = 0, avgAvlDeleteTime = 0, avgRbDeleteTime = 0;
+        double avgCartesianTreeInsertTimeSorted = 0, avgAvlInsertTimeSorted = 0, avgRbInsertTimeSorted = 0;
+        double avgCartesianTreeSearchTimeSorted = 0, avgAvlSearchTimeSorted = 0, avgRbSearchTimeSorted = 0;
+        double avgCartesianTreeDeleteTimeSorted = 0, avgAvlDeleteTimeSorted = 0, avgRbDeleteTimeSorted = 0;
+        int avlMaxDepthSorted = 0, cartesianMaxDepthSorted = 0, rbMaxDepthSorted = 0;
 
         for (int loop = 0; loop < Constants::amount_of_loops / 2; loop++) {
-            std::cout << "Loop " << loop + 1 << " (random data):" << std::endl;
+            std::cout << "Random Loop " << loop + 1 << std::endl;
             dataList.fillRandom(n);
 
-            auto start = std::chrono::high_resolution_clock::now();
             CartesianTree<int> cartesianTree;
             long long cartesianTreeInsertTime = dataList.measureInsertTime(cartesianTree);
-            auto end = std::chrono::high_resolution_clock::now();
-            cartesianTreeInsertTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-            
             SearchResult cartesianTreeSearch = dataList.measureSearchTime(cartesianTree);
             SearchResult cartesianTreeDelete = dataList.measureDeleteTime(cartesianTree);
-
-            start = std::chrono::high_resolution_clock::now();
+            
             AVLTree<int> avl;
             long long avlInsertTime = dataList.measureInsertTime(avl);
-            end = std::chrono::high_resolution_clock::now();
-            avlInsertTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-            
             SearchResult avlSearch = dataList.measureSearchTime(avl);
             SearchResult avlDelete = dataList.measureDeleteTime(avl);
-
-            start = std::chrono::high_resolution_clock::now();
+            
             RBTree<int> rb;
             long long rbInsertTime = dataList.measureInsertTime(rb);
-            end = std::chrono::high_resolution_clock::now();
-            rbInsertTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-            
             SearchResult rbSearch = dataList.measureSearchTime(rb);
             SearchResult rbDelete = dataList.measureDeleteTime(rb);
 
-            avgCartesianTreeInsertTime += cartesianTreeInsertTime;
-            avgCartesianTreeSearchTime += cartesianTreeSearch.averageTime;
-            avgCartesianTreeDeleteTime += cartesianTreeDelete.averageTime;
+            avgCartesianTreeInsertTimeRandom += cartesianTreeInsertTime;
+            avgCartesianTreeSearchTimeRandom += cartesianTreeSearch.averageTime;
+            avgCartesianTreeDeleteTimeRandom += cartesianTreeDelete.averageTime;
             
-            avgAvlInsertTime += avlInsertTime;
-            avgAvlSearchTime += avlSearch.averageTime;
-            avgAvlDeleteTime += avlDelete.averageTime;
+            avgAvlInsertTimeRandom += avlInsertTime;
+            avgAvlSearchTimeRandom += avlSearch.averageTime;
+            avgAvlDeleteTimeRandom += avlDelete.averageTime;
             
-            avgRbInsertTime += rbInsertTime;
-            avgRbSearchTime += rbSearch.averageTime;
-            avgRbDeleteTime += rbDelete.averageTime;
+            avgRbInsertTimeRandom += rbInsertTime;
+            avgRbSearchTimeRandom += rbSearch.averageTime;
+            avgRbDeleteTimeRandom += rbDelete.averageTime;
 
-            if (loop == Constants::amount_of_loops / 2 - 1) {
-                avlMaxDepth = avl.getMaxDepth();
-                cartesianTreeMaxDepth = cartesianTree.getMaxDepth();
-                rbMaxDepth = rb.getMaxDepth();
+            avlMaxDepthRandom = std::max(avlMaxDepthRandom, avl.getMaxDepth());
+            cartesianMaxDepthRandom = std::max(cartesianMaxDepthRandom, cartesianTree.getMaxDepth());
+            rbMaxDepthRandom = std::max(rbMaxDepthRandom, rb.getMaxDepth());
+
+            if (episode == Constants::amount_of_series - 1) {
+                avlMaxHeightsRandom.push_back(avl.getMaxDepth());
+                cartesianMaxHeightsRandom.push_back(cartesianTree.getMaxDepth());
+                rbMaxHeightsRandom.push_back(rb.getMaxDepth());
                 
-                auto depths = avl.getAllDepths();
-                avlDepths.insert(avlDepths.end(), depths.begin(), depths.end());
+                auto avlDepths = avl.getAllDepths();
+                avlDepthsRandom.insert(avlDepthsRandom.end(), avlDepths.begin(), avlDepths.end());
                 
-                depths = cartesianTree.getAllDepths();
-                cartesianTreeDepths.insert(cartesianTreeDepths.end(), depths.begin(), depths.end());
+                auto cartesianDepths = cartesianTree.getAllDepths();
+                cartesianDepthsRandom.insert(cartesianDepthsRandom.end(), cartesianDepths.begin(), cartesianDepths.end());
                 
-                depths = rb.getAllDepths();
-                rbDepths.insert(rbDepths.end(), depths.begin(), depths.end());
+                auto rbDepths = rb.getAllDepths();
+                rbDepthsRandom.insert(rbDepthsRandom.end(), rbDepths.begin(), rbDepths.end());
             }
         }
-
-        insertRandomFile << n << " " << avgCartesianTreeInsertTime / (Constants::amount_of_loops / 2) << " " 
-                         << avgAvlInsertTime / (Constants::amount_of_loops / 2) << " "
-                         << avgRbInsertTime / (Constants::amount_of_loops / 2) << "\n";
-        searchRandomFile << n << " " << avgCartesianTreeSearchTime / (Constants::amount_of_loops / 2) << " " 
-                         << avgAvlSearchTime / (Constants::amount_of_loops / 2) << " "
-                         << avgRbSearchTime / (Constants::amount_of_loops / 2) << "\n";
-        deleteRandomFile << n << " " << avgCartesianTreeDeleteTime / (Constants::amount_of_loops / 2) << " " 
-                         << avgAvlDeleteTime / (Constants::amount_of_loops / 2) << " "
-                         << avgRbDeleteTime / (Constants::amount_of_loops / 2) << "\n";
-        
-        maxDepthFile << n << " " << cartesianTreeMaxDepth << " " << avlMaxDepth << " " << rbMaxDepth << "\n";
-
-        avgCartesianTreeInsertTime = avgAvlInsertTime = avgRbInsertTime = 0;
-        avgCartesianTreeSearchTime = avgAvlSearchTime = avgRbSearchTime = 0;
-        avgCartesianTreeDeleteTime = avgAvlDeleteTime = avgRbDeleteTime = 0;
 
         for (int loop = Constants::amount_of_loops / 2; loop < Constants::amount_of_loops; loop++) {
-            std::cout << "Loop " << loop + 1 << " (sorted data):" << std::endl;
+            std::cout << "Sorted Loop " << loop + 1 << std::endl;
             dataList.fillSorted(n);
 
-            auto start = std::chrono::high_resolution_clock::now();
             CartesianTree<int> cartesianTree;
             long long cartesianTreeInsertTime = dataList.measureInsertTime(cartesianTree);
-            auto end = std::chrono::high_resolution_clock::now();
-            cartesianTreeInsertTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-            
             SearchResult cartesianTreeSearch = dataList.measureSearchTime(cartesianTree);
             SearchResult cartesianTreeDelete = dataList.measureDeleteTime(cartesianTree);
 
-            start = std::chrono::high_resolution_clock::now();
             AVLTree<int> avl;
             long long avlInsertTime = dataList.measureInsertTime(avl);
-            end = std::chrono::high_resolution_clock::now();
-            avlInsertTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-            
             SearchResult avlSearch = dataList.measureSearchTime(avl);
             SearchResult avlDelete = dataList.measureDeleteTime(avl);
-
-            start = std::chrono::high_resolution_clock::now();
+            
             RBTree<int> rb;
             long long rbInsertTime = dataList.measureInsertTime(rb);
-            end = std::chrono::high_resolution_clock::now();
-            rbInsertTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-            
             SearchResult rbSearch = dataList.measureSearchTime(rb);
             SearchResult rbDelete = dataList.measureDeleteTime(rb);
 
-            avgCartesianTreeInsertTime += cartesianTreeInsertTime;
-            avgCartesianTreeSearchTime += cartesianTreeSearch.averageTime;
-            avgCartesianTreeDeleteTime += cartesianTreeDelete.averageTime;
+            avgCartesianTreeInsertTimeSorted += cartesianTreeInsertTime;
+            avgCartesianTreeSearchTimeSorted += cartesianTreeSearch.averageTime;
+            avgCartesianTreeDeleteTimeSorted += cartesianTreeDelete.averageTime;
             
-            avgAvlInsertTime += avlInsertTime;
-            avgAvlSearchTime += avlSearch.averageTime;
-            avgAvlDeleteTime += avlDelete.averageTime;
+            avgAvlInsertTimeSorted += avlInsertTime;
+            avgAvlSearchTimeSorted += avlSearch.averageTime;
+            avgAvlDeleteTimeSorted += avlDelete.averageTime;
             
-            avgRbInsertTime += rbInsertTime;
-            avgRbSearchTime += rbSearch.averageTime;
-            avgRbDeleteTime += rbDelete.averageTime;
+            avgRbInsertTimeSorted += rbInsertTime;
+            avgRbSearchTimeSorted += rbSearch.averageTime;
+            avgRbDeleteTimeSorted += rbDelete.averageTime;
 
-            if (loop == Constants::amount_of_loops - 1) {
-                avlMaxDepth = avl.getMaxDepth();
-                cartesianTreeMaxDepth = cartesianTree.getMaxDepth();
-                rbMaxDepth = rb.getMaxDepth();
+            avlMaxDepthSorted = std::max(avlMaxDepthSorted, avl.getMaxDepth());
+            cartesianMaxDepthSorted = std::max(cartesianMaxDepthSorted, cartesianTree.getMaxDepth());
+            rbMaxDepthSorted = std::max(rbMaxDepthSorted, rb.getMaxDepth());
+
+            if (episode == Constants::amount_of_series - 1) {
+                avlMaxHeightsSorted.push_back(avl.getMaxDepth());
+                cartesianMaxHeightsSorted.push_back(cartesianTree.getMaxDepth());
+                rbMaxHeightsSorted.push_back(rb.getMaxDepth());
                 
-                auto depths = avl.getAllDepths();
-                avlDepths.insert(avlDepths.end(), depths.begin(), depths.end());
+                auto avlDepths = avl.getAllDepths();
+                avlDepthsSorted.insert(avlDepthsSorted.end(), avlDepths.begin(), avlDepths.end());
                 
-                depths = cartesianTree.getAllDepths();
-                cartesianTreeDepths.insert(cartesianTreeDepths.end(), depths.begin(), depths.end());
+                auto cartesianDepths = cartesianTree.getAllDepths();
+                cartesianDepthsSorted.insert(cartesianDepthsSorted.end(), cartesianDepths.begin(), cartesianDepths.end());
                 
-                depths = rb.getAllDepths();
-                rbDepths.insert(rbDepths.end(), depths.begin(), depths.end());
+                auto rbDepths = rb.getAllDepths();
+                rbDepthsSorted.insert(rbDepthsSorted.end(), rbDepths.begin(), rbDepths.end());
             }
         }
 
-        insertSortedFile << n << " " << avgCartesianTreeInsertTime / (Constants::amount_of_loops / 2) << " " 
-                         << avgAvlInsertTime / (Constants::amount_of_loops / 2) << " "
-                         << avgRbInsertTime / (Constants::amount_of_loops / 2) << "\n";
-        searchSortedFile << n << " " << avgCartesianTreeSearchTime / (Constants::amount_of_loops / 2) << " " 
-                         << avgAvlSearchTime / (Constants::amount_of_loops / 2) << " "
-                         << avgRbSearchTime / (Constants::amount_of_loops / 2) << "\n";
-        deleteSortedFile << n << " " << avgCartesianTreeDeleteTime / (Constants::amount_of_loops / 2) << " " 
-                         << avgAvlDeleteTime / (Constants::amount_of_loops / 2) << " "
-                         << avgRbDeleteTime / (Constants::amount_of_loops / 2) << "\n";
         
-        maxDepthFile << n << " " << cartesianTreeMaxDepth << " " << avlMaxDepth << " " << rbMaxDepth << "\n";
+        avgCartesianTreeInsertTimeRandom /= (Constants::amount_of_loops / 2);
+        avgCartesianTreeSearchTimeRandom /= (Constants::amount_of_loops / 2);
+        avgCartesianTreeDeleteTimeRandom /= (Constants::amount_of_loops / 2);
+        avgAvlInsertTimeRandom /= (Constants::amount_of_loops / 2);
+        avgAvlSearchTimeRandom /= (Constants::amount_of_loops / 2);
+        avgAvlDeleteTimeRandom /= (Constants::amount_of_loops / 2);
+        avgRbInsertTimeRandom /= (Constants::amount_of_loops / 2);
+        avgRbSearchTimeRandom /= (Constants::amount_of_loops / 2);
+        avgRbDeleteTimeRandom /= (Constants::amount_of_loops / 2);
 
-        if (episode == Constants::amount_of_series - 1) {
-			std::vector<int> max_heights;
-			max_heights.push_back(avlMaxDepth);
-			max_heights.push_back(cartesianTreeMaxDepth);
+        insertRandomFile << n << " " << avgCartesianTreeInsertTimeRandom << " " 
+                         << avgAvlInsertTimeRandom << " " << avgRbInsertTimeRandom << "\n";
+        searchRandomFile << n << " " << avgCartesianTreeSearchTimeRandom << " " 
+                         << avgAvlSearchTimeRandom << " " << avgRbSearchTimeRandom << "\n";
+        deleteRandomFile << n << " " << avgCartesianTreeDeleteTimeRandom << " " 
+                         << avgAvlDeleteTimeRandom << " " << avgRbDeleteTimeRandom << "\n";
+        
+        maxHeightRandomFile << n << " " << avlMaxDepthRandom << " " 
+                           << cartesianMaxDepthRandom << " " << rbMaxDepthRandom << "\n";
 
-			writeDepthsToFile(Constants::dataFilePath + "max_heights.dat", max_heights);
+        avgCartesianTreeInsertTimeSorted /= (Constants::amount_of_loops / 2);
+        avgCartesianTreeSearchTimeSorted /= (Constants::amount_of_loops / 2);
+        avgCartesianTreeDeleteTimeSorted /= (Constants::amount_of_loops / 2);
+        avgAvlInsertTimeSorted /= (Constants::amount_of_loops / 2);
+        avgAvlSearchTimeSorted /= (Constants::amount_of_loops / 2);
+        avgAvlDeleteTimeSorted /= (Constants::amount_of_loops / 2);
+        avgRbInsertTimeSorted /= (Constants::amount_of_loops / 2);
+        avgRbSearchTimeSorted /= (Constants::amount_of_loops / 2);
+        avgRbDeleteTimeSorted /= (Constants::amount_of_loops / 2);
 
-            writeDepthsToFile(Constants::dataFilePath + "avl_depths.dat", avlDepths);
-            writeDepthsToFile(Constants::dataFilePath + "cartesianTree_depths.dat", cartesianTreeDepths);
-            writeDepthsToFile(Constants::dataFilePath + "rb_depths.dat", rbDepths);
-        }
+        insertSortedFile << n << " " << avgCartesianTreeInsertTimeSorted << " " 
+                         << avgAvlInsertTimeSorted << " " << avgRbInsertTimeSorted << "\n";
+        searchSortedFile << n << " " << avgCartesianTreeSearchTimeSorted << " " 
+                         << avgAvlSearchTimeSorted << " " << avgRbSearchTimeSorted << "\n";
+        deleteSortedFile << n << " " << avgCartesianTreeDeleteTimeSorted << " " 
+                         << avgAvlDeleteTimeSorted << " " << avgRbDeleteTimeSorted << "\n";
+        
+        maxHeightSortedFile << n << " " << avlMaxDepthSorted << " " 
+                           << cartesianMaxDepthSorted << " " << rbMaxDepthSorted << "\n";
     }
 
     insertRandomFile.close();
@@ -220,10 +222,28 @@ int main() {
     insertSortedFile.close();
     searchSortedFile.close();
     deleteSortedFile.close();
-    maxDepthFile.close();
-    avlDepthsFile.close();
-    cartesianTreeDepthsFile.close();
-    rbDepthsFile.close();
+    maxHeightRandomFile.close();
+    maxHeightSortedFile.close();
+
+	writeDepthHistogram(Constants::dataFilePath + "max_height_avl_random_hist.dat", avlMaxHeightsRandom);
+	writeDepthHistogram(Constants::dataFilePath + "max_height_cartesian_random_hist.dat", cartesianMaxHeightsRandom);
+	writeDepthHistogram(Constants::dataFilePath + "max_height_rb_random_hist.dat", rbMaxHeightsRandom);
+    writeDepthHistogram(Constants::dataFilePath + "max_height_avl_random.dat", avlMaxHeightsRandom);
+
+    writeDepthHistogram(Constants::dataFilePath + "max_height_cartesian_random.dat", cartesianMaxHeightsRandom);
+    writeDepthHistogram(Constants::dataFilePath + "max_height_rb_random.dat", rbMaxHeightsRandom);
     
+    writeDepthHistogram(Constants::dataFilePath + "max_height_avl_sorted.dat", avlMaxHeightsSorted);
+    writeDepthHistogram(Constants::dataFilePath + "max_height_cartesian_sorted.dat", cartesianMaxHeightsSorted);
+    writeDepthHistogram(Constants::dataFilePath + "max_height_rb_sorted.dat", rbMaxHeightsSorted);
+
+	writeDepthHistogram(Constants::dataFilePath + "depths_avl_random_hist.dat", avlDepthsRandom);
+	writeDepthHistogram(Constants::dataFilePath + "depths_cartesian_random_hist.dat", cartesianDepthsRandom);
+	writeDepthHistogram(Constants::dataFilePath + "depths_rb_random_hist.dat", rbDepthsRandom);
+
+	writeDepthHistogram(Constants::dataFilePath + "depths_avl_sorted_hist.dat", avlDepthsSorted);
+	writeDepthHistogram(Constants::dataFilePath + "depths_cartesian_sorted_hist.dat", cartesianDepthsSorted);
+	writeDepthHistogram(Constants::dataFilePath + "depths_rb_sorted_hist.dat", rbDepthsSorted);
+
     return 0;
 }

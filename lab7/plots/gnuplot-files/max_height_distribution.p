@@ -8,4 +8,6 @@ set style fill solid
 set boxwidth 0.9
 
 set output "plots/pictures/max_height_distribution.png"
-plot "plots/dat-files/max_heights.dat" using 1 with boxes title "AVL vs Декартово"
+plot "plots/dat-files/max_height_avl_random.dat" using 2:xtic(1) title "AVL Random", \
+     "plots/dat-files/max_height_cartesian_random.dat" using 2:xtic(1) title "Cartesian Random", \
+     "plots/dat-files/max_height_rb_random.dat" using 2:xtic(1) title "RB Random"

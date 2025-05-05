@@ -2,7 +2,6 @@
 #define RB_TREE_H
 
 #include <vector>
-#include <iostream>
 #include "TreeNode.h"
 
 template <typename T>
@@ -122,19 +121,23 @@ private:
         return nullptr;
     }
 
-    int getMaxDepthHelper(TreeNode<T>* node) const {
-        if (!node) return 0;
-        return 1 + std::max(getMaxDepthHelper(node->left), 
-                          getMaxDepthHelper(node->right));
+    void collectLeafDepths(TreeNode<T>* node, std::vector<int>& depths, int currentDepth) const {
+        if (!node) return;
+        if (!node->left && !node->right) {
+            depths.push_back(currentDepth);
+            return;
+        }
+        collectLeafDepths(node->left, depths, currentDepth + 1);
+        collectLeafDepths(node->right, depths, currentDepth + 1);
     }
 
-    void collectDepthsHelper(TreeNode<T>* node, std::vector<int>& depths, int currentDepth) const {
+    void collectAllDepths(TreeNode<T>* node, std::vector<int>& depths, int currentDepth) const {
         if (!node) {
             depths.push_back(currentDepth);
             return;
         }
-        collectDepthsHelper(node->left, depths, currentDepth + 1);
-        collectDepthsHelper(node->right, depths, currentDepth + 1);
+        collectAllDepths(node->left, depths, currentDepth + 1);
+        collectAllDepths(node->right, depths, currentDepth + 1);
     }
 
 public:
@@ -176,12 +179,28 @@ public:
     }
 
     int getSize() const { return size; }
-    int getMaxDepth() const { return getMaxDepthHelper(root); }
+
+    int getMaxDepth() const {
+        return getMaxDepthHelper(root);
+    }
 
     std::vector<int> getAllDepths() const {
         std::vector<int> depths;
-        collectDepthsHelper(root, depths, 0);
+        collectAllDepths(root, depths, 0);
         return depths;
+    }
+
+    std::vector<int> getLeafDepths() const {
+        std::vector<int> leafDepths;
+        collectLeafDepths(root, leafDepths, 0);
+        return leafDepths;
+    }
+
+private:
+    int getMaxDepthHelper(TreeNode<T>* node) const {
+        if (!node) return 0;
+        return 1 + std::max(getMaxDepthHelper(node->left), 
+                      getMaxDepthHelper(node->right));
     }
 };
 
