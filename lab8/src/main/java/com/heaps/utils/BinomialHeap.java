@@ -29,7 +29,7 @@ public class BinomialHeap {
         if (h1 == null) return h2;
         if (h2 == null) return h1;
 
-        BinomialHeapNode dummy = newNode(0); // Dummy node
+        BinomialHeapNode dummy = newNode(0);
         BinomialHeapNode tail = dummy;
         
         while (h1 != null && h2 != null) {
