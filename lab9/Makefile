@@ -10,7 +10,6 @@ CLASS_NAME := $(GROUP_ID).Main
 
 RPRT := $(REPORT_DIR)/report.pdf
 EXE := $(TARGET_DIR)/$(JAR_FILE)
-OBJ := $(patsubst $(SRC_DIR)/%.cpp, $(TARGET_DIR)/%.o, $(SRC))
 GNP := $(wildcard $(GNUPLOT_DIR)/*.p)
 
 JV := java
