@@ -1,0 +1,4 @@
+\babel@toc {russian}{}\relax 
+\contentsline {section}{Описание задачи}{1}{section*.2}%
+\contentsline {section}{Описание метода/модели}{2}{section*.3}%
+\contentsline {section}{Выполнение задачи}{2}{section*.4}%
